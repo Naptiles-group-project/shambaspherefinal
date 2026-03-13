@@ -1,0 +1,475 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --green: #4EA685;
+    --black: #000000;
+    --white: #ffffff;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: var(--green);
+    color: var(--white);
+}
+
+
+header nav ul li a {
+    position: relative;
+}
+header nav ul li a::after {
+    content: '';
+    width: 0;
+    height: 2px;
+    background: var(--white);
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    transition: 0.3s;
+}
+header nav ul li a:hover::after {
+    width: 100%;
+}
+
+header.sticky {
+    background-color: rgba(0,0,0,0.85);
+    transition: background-color 0.5s;
+}
+
+header .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    background-color: #eaf6f4;
+    gap: 30px;
+}
+
+
+.hero-carousel .slide img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    filter: brightness(0.7); /* slightly darkens image for contrast */
+}
+
+
+.slide-caption h1 {
+    animation: slideIn 1s ease-out forwards;
+    opacity: 0;
+}
+@keyframes slideIn {
+    from { transform: translateX(-50px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.hero-content {
+    max-width: 500px;
+}
+
+.hero-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: var(--green);
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--black);
+}
+
+.hero-content button {
+    padding: 12px 25px;
+    font-size: 1rem;
+    border: none;
+    background-color: var(--green);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.hero-content button:hover {
+    background-color: #3e826f;
+}
+
+.hero-image img {
+    width: 400px;
+    border-radius: 10px;
+}
+
+/* Features Section */
+.features {
+    padding: 50px;
+    text-align: center;
+    background-color: var(--white);
+}
+
+.features h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: var(--green);
+}
+
+.feature-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.feature-card:hover {
+    transform: scale(1.05) rotate(-1deg);
+    box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+}
+
+.feature-card {
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    text-align: center;
+}
+
+.feature-card img {
+    width: 150px;
+    margin-bottom: 15px;
+}
+
+.feature-card h3 {
+    color: var(--green);
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    color: var(--black);
+    font-size: 0.95rem;
+}
+
+/* Login Section */
+.login-section {
+    padding: 50px;
+    text-align: center;
+    background-color: #eaf6f4;
+}
+
+.role-selection {
+    margin-bottom: 30px;
+}
+
+.role-btn {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1rem;
+    border: none;
+    background-color: var(--green);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.role-btn:hover {
+    background-color: #3e826f;
+}
+
+/* Role-specific Form */
+.role-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.role-form input, .role-form select {
+    padding: 10px;
+    border: 1px solid var(--green);
+    border-radius: 5px;
+}
+
+
+
+/* Carousel */
+.hero-carousel {
+    position: relative;
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slide {
+    display: none;
+    position: relative;
+    width: 100%;
+}
+
+.slide.active {
+    display: block;
+}
+
+.slide img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+}
+
+.slide-caption {
+    position: absolute;
+    bottom: 20%;
+    left: 5%;
+    color: white;
+    background-color: rgba(0,0,0,0.4);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+}
+
+/* Carousel buttons */
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--white);
+    font-size: 2rem;
+    padding: 10px;
+    background-color: rgba(0,0,0,0.3);
+    border: none;
+    border-radius: 50%;
+}
+
+.prev { left: 10px; }
+.next { right: 10px; }
+
+.prev:hover, .next:hover { background-color: rgba(0,0,0,0.6); }
+
+/* Feature Cards Animation */
+.feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Scroll Animation (simple fade-in) */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+}
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* Statistics Counters */
+.statistics {
+    padding: 50px;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.stat h3 {
+    font-size: 2.5rem;
+    color: var(--green);
+}
+
+.stat p {
+    font-size: 1.1rem;
+    color: var(--black);
+}
+
+/* Testimonials */
+.testimonials {
+    padding: 50px;
+    background-color: #eaf6f4;
+    text-align: center;
+    position: relative;
+}
+
+.testimonial-slide.active {
+    transform: rotateY(0deg);
+    transition: transform 0.6s;
+}
+.testimonial-slide:not(.active) {
+    transform: rotateY(15deg);
+    opacity: 0.6;
+}
+
+.testimonial-carousel {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.testimonial-slide {
+    display: none;
+    padding: 20px;
+    font-style: italic;
+    color: var(--black);
+    border-radius: 10px;
+    background-color: var(--white);
+    margin: 10px 0;
+}
+
+.testimonial-slide.active {
+    display: block;
+}
+
+.testimonial-slide h4 {
+    margin-top: 15px;
+    color: var(--green);
+}
+
+/* Carousel buttons */
+.prev-testimonial, .next-testimonial {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 1.2rem;
+}
+
+.prev-testimonial { left: -30px; }
+.next-testimonial { right: -30px; }
+
+.prev-testimonial:hover, .next-testimonial:hover {
+    background-color: #3e826f;
+}
+
+/* Produce Showcase */
+.produce-showcase {
+    padding: 50px;
+    text-align: center;
+    background-color: #ffffff;
+    position: relative;
+}
+
+.produce-item:hover img {
+    transform: scale(1.1);
+    transition: transform 0.5s ease;
+}
+
+.produce-carousel {
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.produce-item {
+    min-width: 200px;
+    background-color: #eaf6f4;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.produce-item img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.produce-item:hover {
+    transform: translateY(-10px);
+}
+
+/* Produce Carousel Buttons */
+.prev-produce, .next-produce {
+    cursor: pointer;
+    background-color: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 10px;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    position: absolute;
+    top: 40%;
+}
+
+.prev-produce { left: 0; }
+.next-produce { right: 0; }
+
+.prev-produce:hover, .next-produce:hover {
+    background-color: #3e826f;
+}
+
+
+
+
+.role-form button {
+    padding: 12px;
+    border: none;
+    background-color: var(--black);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.role-form button:hover {
+    background-color: #333333;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--green);
+    color: var(--white);
+}

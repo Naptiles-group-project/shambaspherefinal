@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buyer Dashboard - ShambaSphere</title>
+<link rel="stylesheet" href="buyer-dashboard.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">ShambaSphere</div>
+
+    <nav>
+        <a href="marketplace.html">Marketplace</a>
+        <a href="#orders">My Orders</a>
+        <a href="profile.html">Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </nav>
+</header>
+
+<!-- STATS -->
+<section class="stats">
+    <div class="stat-card">
+        <h3 id="totalOrders">0</h3>
+        <p>Total Orders</p>
+    </div>
+    <div class="stat-card">
+        <h3 id="totalSpent">KSh 0</h3>
+        <p>Total Spent</p>
+    </div>
+</section>
+
+<!-- AVAILABLE PRODUCTS -->
+<section class="products">
+    <h2>Available Products</h2>
+    <div id="productsContainer" class="products-grid"></div>
+</section>
+
+<!-- ORDER HISTORY -->
+<section class="orders" id="orders">
+    <h2>My Orders</h2>
+    <div id="ordersContainer"></div>
+</section>
+
+<script src="buyer-dashboard.js"></script>
+</body>
+</html>

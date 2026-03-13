@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Knowledge Hub</title>
+    <link rel="stylesheet" href="knowledge-hub.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<header class="hub-header">
+    <h2>📚 Knowledge Hub</h2>
+</header>
+
+<div class="hub-container">
+
+    <!-- CREATE POST (Visible only to Admin & Advisor) -->
+    <div id="createPostSection" class="create-post">
+        <h3>Create New Article</h3>
+        <input type="text" id="postTitle" placeholder="Post Title">
+        <textarea id="postContent" placeholder="Write your article here..."></textarea>
+        <button onclick="createPost()">Publish</button>
+    </div>
+
+    <!-- POSTS DISPLAY -->
+    <div id="postsContainer" class="posts-container"></div>
+
+</div>
+
+<script src="knowledge-hub.js"></script>
+</body>
+</html>

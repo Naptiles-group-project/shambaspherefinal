@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {%load static%}
+    <meta charset="UTF-8">
+    <title>ShambaSphere Marketplace</title>
+    <link rel="stylesheet" href="{%static 'css/marketplace.css'%}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">🌾 ShambaSphere</div>
+
+    <input type="text" id="searchInput" placeholder="Search products...">
+
+    <div class="nav-actions">
+        <div class="cart-icon" onclick="toggleCart()">
+            🛒 <span id="cartCount">0</span>
+        </div>
+    </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <h1>Fresh Farm Products Delivered to You</h1>
+    <p>Support Local Farmers. Buy Direct. Save More.</p>
+</section>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div class="main-container">
+
+    <!-- CATEGORY SIDEBAR -->
+    <aside class="sidebar">
+        <h3>Categories</h3>
+        <ul>
+            <li onclick="filterCategory('All')">All</li>
+            <li onclick="filterCategory('Vegetables')">Vegetables</li>
+            <li onclick="filterCategory('Fruits')">Fruits</li>
+            <li onclick="filterCategory('Grains')">Grains</li>
+            <li onclick="filterCategory('Livestock')">Livestock</li>
+        </ul>
+    </aside>
+
+    <!-- PRODUCTS -->
+    <section class="products-section">
+        <div class="products-grid" id="productsContainer">
+            <!-- Products Render Here -->
+        </div>
+    </section>
+
+</div>
+
+<!-- ================= CART SIDEBAR ================= -->
+<!-- ================= CART MODAL ================= -->
+<div class="cart-modal" id="cartModal">
+    <div class="cart-card">
+        <span class="close-cart" onclick="toggleCart()">×</span>
+        <h3>Your Cart</h3>
+
+        <div id="cartItems"></div>
+
+        <h4>Total: KSh <span id="cartTotal">0</span></h4>
+
+        <div class="cart-buttons">
+            <button onclick="clearCart()" class="clear-btn">Clear Cart</button>
+            <button onclick="cashout()" class="checkout-btn">Cashout</button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/marketplace.js' %}"></script>
+</body>
+</html>

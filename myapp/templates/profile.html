@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Profile - ShambaSphere</title>
+<link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">ShambaSphere</div>
+    <div class="header-actions">
+        <button onclick="toggleDarkMode()">🌙</button>
+        <button onclick="logout()">Logout</button>
+       <a href="index.html"><button>home</button></a> 
+    </div>
+</header>
+
+<section class="profile-container">
+
+    <div class="profile-card">
+
+        <img id="profileImage" src="https://via.placeholder.com/150">
+        <input type="file" id="imageUpload" hidden>
+        <button class="small-btn" onclick="document.getElementById('imageUpload').click()">Change Photo</button>
+
+        <h2 id="fullName"></h2>
+        <span class="role-badge" id="roleBadge"></span>
+
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Phone:</strong> <span id="phone"></span></p>
+        <p><strong>Location:</strong> <span id="location"></span></p>
+
+        <!-- ROLE SPECIFIC SECTION -->
+        <div id="roleSpecificSection"></div>
+
+        <button class="edit-btn" onclick="openEditModal()">Edit Profile</button>
+
+    </div>
+
+</section>
+
+<!-- EDIT MODAL -->
+<div class="modal" id="editModal">
+    <div class="modal-content">
+        <h3>Edit Profile</h3>
+
+        <input type="text" id="editName" placeholder="Full Name">
+        <input type="email" id="editEmail" placeholder="Email">
+        <input type="text" id="editPhone" placeholder="Phone">
+        <input type="text" id="editLocation" placeholder="Location">
+
+        <button onclick="saveProfile()">Save Changes</button>
+        <button onclick="closeEditModal()">Cancel</button>
+    </div>
+</div>
+
+<script src="profile.js"></script>
+</body>
+</html>

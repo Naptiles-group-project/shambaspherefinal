@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {%load static%}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShambaSphere - Digital Agriculture Platform</title>
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+<body>
+    <!-- Header / Navigation -->
+    <header>
+        <div class="logo">ShambaSphere</div>
+        <nav>
+            <ul>
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#features">About</a></li>
+                <li><a href="#login-section">Login/Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+  
+   <!-- Hero Section with Carousel -->
+<section class="hero" id="hero">
+    <div class="hero-carousel">
+        <div class="slide active">
+            <img src="{%static 'images/jillwellington-grapes-553464_1920.jpg'%}" alt="Agriculture">
+            <div class="slide-caption">
+                <h1>Connecting Farmers, Buyers, and Experts</h1>
+                <p>Empowering agriculture with technology, transparency, and knowledge.</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="images/pexels-freddie-hermosora-tayoan-2243861-3923996.jpg" alt="Marketplace">
+            <div class="slide-caption">
+                <h1>Online Marketplace</h1>
+                <p>List produce and connect directly with buyers.</p>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="images/elasticcomputefarm-library-1147815_1280.jpg" alt="Knowledge Hub">
+            <div class="slide-caption">
+                <h1>Knowledge Hub</h1>
+                <p>Access verified farming tips and weather updates.</p>
+            </div>
+        </div>
+        <button class="prev">&#10094;</button>
+        <button class="next">&#10095;</button>
+    </div>
+</section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <h2>Platform Features</h2>
+        <div class="feature-cards">
+            <div class="feature-card">
+                <img src="images/pexels-freddie-hermosora-tayoan-2243861-3923996.jpg" alt="Marketplace">
+                <h3>Online Marketplace</h3>
+                <p>Farmers can list their produce and buyers can browse and order directly, reducing middlemen and increasing income.</p>
+            </div>
+            <div class="feature-card">
+                <img src="images/elasticcomputefarm-library-1147815_1280.jpg" alt="Knowledge Hub">
+                <h3>Knowledge & Advisory Hub</h3>
+                <p>Access verified farming tips, crop management advice, pest/disease control, and weather updates tailored to your location.</p>
+            </div>
+            <div class="feature-card">
+                <img src="images/download.jpeg" alt="Community">
+                <h3>Role-Based Community</h3>
+                <p>Farmers, buyers, and agricultural institutions each have personalized dashboards to interact and manage their accounts.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Statistics Counters -->
+<section class="statistics">
+    <h2>Our Impact</h2>
+    <div class="stats-container">
+        <div class="stat">
+            <h3 class="counter" data-target="1500">0</h3>
+            <p>Farmers Connected</p>
+        </div>
+        <div class="stat">
+            <h3 class="counter" data-target="800">0</h3>
+            <p>Active Buyers</p>
+        </div>
+        <div class="stat">
+            <h3 class="counter" data-target="3500">0</h3>
+            <p>Produce Listings</p>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Carousel -->
+<section class="testimonials">
+    <h2>What Our Users Say</h2>
+    <div class="testimonial-carousel">
+        <div class="testimonial-slide active">
+            <p>"ShambaSphere helped me reach buyers directly and increased my profits!"</p>
+            <h4>- Farmer John</h4>
+        </div>
+        <div class="testimonial-slide">
+            <p>"I can browse fresh produce and order in bulk without intermediaries."</p>
+            <h4>- Buyer Grace</h4>
+        </div>
+        <div class="testimonial-slide">
+            <p>"The advisory hub is a game-changer for modern farming."</p>
+            <h4>- Ministry Expert</h4>
+        </div>
+        <button class="prev-testimonial">&#10094;</button>
+        <button class="next-testimonial">&#10095;</button>
+    </div>
+</section>
+
+<!-- Dynamic Produce Showcase -->
+<section class="produce-showcase">
+    <h2>Featured Produce</h2>
+    <div class="produce-carousel">
+        <div class="produce-item"><img src="images/engin_akyurt-tomatoes-8181194_1280.jpg" alt="Tomatoes"><p>Tomatoes</p></div>
+        <div class="produce-item"><img src="images/pexels-potatoes-1866415_1280.jpg" alt="Potatoes"><p>Potatoes</p></div>
+        <div class="produce-item"><img src="images/pexels-hanamara-3650647.jpg" alt="Carrots"><p>Carrots</p></div>
+        <button class="prev-produce">&#10094;</button>
+        <button class="next-produce">&#10095;</button>
+    </div>
+</section>
+
+    <!-- Login/Register Section -->
+    <section class="login-section" id="login-section">
+        <h2>Login / Register</h2>
+        <div class="role-selection">
+           <a href="{% url 'farmer_register' %}"><button class="role-btn" data-role="farmer">Farmer</button></a> 
+            <button class="role-btn" data-role="buyer">Buyer</button>
+            <button class="role-btn" data-role="institution">Institution</button>
+        </div>
+
+        <div id="form-container">
+            <!-- JS will inject role-specific forms here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 ShambaSphere. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

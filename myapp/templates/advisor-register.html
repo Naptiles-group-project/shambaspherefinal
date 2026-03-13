@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Advisor Registration</title>
+<link rel="stylesheet" href="advisor-register.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="register-container">
+
+    <h2>🧠 Advisor Registration</h2>
+    <p>Join as an Agricultural Advisor</p>
+
+    <form id="advisorForm">
+
+        <input type="text" id="fullName" placeholder="Full Name" required>
+
+        <input type="email" id="email" placeholder="Email Address" required>
+
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+
+        <input type="text" id="specialization" placeholder="Specialization (e.g Pest Control)" required>
+
+        <textarea id="bio" placeholder="Short Professional Bio" required></textarea>
+
+        <input type="password" id="password" placeholder="Create Password" required>
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <p id="message"></p>
+
+</div>
+
+<script src="advisor-register.js"></script>
+</body>
+</html>

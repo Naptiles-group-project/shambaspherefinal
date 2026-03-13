@@ -1,0 +1,241 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    {%load static%}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farmer Dashboard - ShambaSphere</title>
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body>
+<header>
+<div class="logo">ShambaSphere</div>
+<nav>
+<ul>
+<li><a href="index.html">Marketplace</a></li>
+<li><a href="#add-produce-section">Add Produce</a></li>
+<li><a href="#my-produce">My Listings</a></li>
+<li><a href="#orders-section">Orders</a></li>
+<li><a href="#">Logout</a></li>
+</ul>
+</nav>
+</header>
+
+<!-- Dashboard Stats -->
+<section class="dashboard-stats" id="dashboard-stats">
+<h2>Dashboard Stats</h2>
+<div class="stats-container">
+<div class="stat">
+<h3 id="total-listings">0</h3>
+<p>Total Listings</p>
+</div>
+<div class="stat">
+<h3 id="total-orders">0</h3>
+<p>Total Orders</p>
+</div>
+<div class="stat">
+<h3 id="total-income">KSh 0</h3>
+<p>Estimated Income</p>
+</div>
+</div>
+</section>
+
+
+ <!-- Add Produce Section -->
+<section class="add-produce-section" id="add-produce-section">
+<h2>Add New Produce</h2>
+<form id="add-produce-form" method="post" enctype="multipart/form-data">
+{% csrf_token %}
+<input type="text" name="produceName" placeholder="Produce Name" required>
+<input type="number" name="quantity" placeholder="Quantity (kg)" required>
+<input type="number" name="price" placeholder="Price per kg (KSh)" required> -->
+
+<!-- Image Upload -->
+ <input type="file" name="image" id="image-upload" accept="image/*" required>
+<img id="image-preview" style="width:100px; display:none; margin-top:10px; border-radius:8px;">
+
+<button type="submit">Add Produce</button>
+</form>
+</section>
+
+<!-- My Listings -->
+ <section class="my-produce" id="my-produce">
+<h2>My Listings</h2>
+<div id="produce-list">
+    {% for produce in produce_list %}
+    <div class="produce-item"> 
+         <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
+        <p>{{ produce.name }}</p>
+        <p>{{ produce.quantity }} kg</p>
+        <p>KSh {{ produce.price }}</p>
+        <p>Status: {{ produce.status }}</p>
+    </div>
+    {% empty %}
+    <p>No produce listed yet.</p>
+    {% endfor %}
+</div>
+</section>
+
+<!-- Marketplace Preview -->
+ <section class="marketplace" id="marketplace">
+<h2>Marketplace Preview</h2>
+<div id="marketplace-list">
+    {% for produce in marketplace_list %}
+    <div class="marketplace-item">
+        <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
+        <p>{{ produce.name }}</p>
+        <p>{{ produce.quantity }} kg</p>
+        <p>KSh {{ produce.price }}</p>
+        <p>Farmer: {{ produce.farmer.user.username }}</p>
+    </div>
+    {% empty %}
+    <p>No produce available in marketplace yet.</p>
+    {% endfor %}
+</div>
+</section> 
+
+<!-- Orders Section -->
+ <section class="orders-section" id="orders-section">
+<h2>Orders Received</h2>
+<div id="orders-list">
+<p>No orders yet.</p>
+</div>
+</section>
+
+<!-- Marketplace Preview -->
+<section class="marketplace" id="marketplace">
+<h2>Marketplace Preview</h2>
+<div id="marketplace-list"></div>
+</section> 
+
+<!-- EDIT PRODUCT MODAL -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h3>Edit Produce</h3>
+
+        <input type="text" id="editName">
+        <input type="number" id="editQuantity">
+        <input type="number" id="editPrice">
+
+        <select id="editStatus">
+            <option value="Available">Available</option>
+            <option value="Sold">Sold</option>
+        </select>
+
+        <input type="file" id="editImage" accept="image/*">
+
+        <button onclick="saveChanges()">Save Changes</button>
+    </div>
+</div>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html> 
+
+<!-- 
+
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/farmer-dashboard.css' %}">
+</head>
+<body>
+<header>
+    <div class="logo">ShambaSphere</div>
+    <nav>
+        <ul>
+            <li><a href="{% url 'marketplace' %}">Marketplace</a></li>
+            <li><a href="#add-produce-section">Add Produce</a></li>
+            <li><a href="#my-produce">My Listings</a></li>
+            <li><a href="#">Logout</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Dashboard Stats -->
+<!-- <section class="dashboard-stats" id="dashboard-stats">
+    <h2>Dashboard Stats</h2>
+    <div class="stats-container">
+        <div class="stat">
+            <h3>{{ total_listings }}</h3>
+            <p>Total Listings</p>
+        </div>
+        <div class="stat">
+            <h3>{{ total_orders }}</h3>
+            <p>Total Orders</p>
+        </div>
+        <div class="stat">
+            <h3>KSh {{ total_income }}</h3>
+            <p>Estimated Income</p>
+        </div>
+    </div>
+</section> -->
+
+<!-- Add Produce Section -->
+<!-- <section class="add-produce-section" id="add-produce-section">
+    <h2>Add New Produce</h2>
+    <form id="add-produce-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="produceName" placeholder="Produce Name" required>
+        <input type="number" name="quantity" placeholder="Quantity (kg)" required>
+        <input type="number" name="price" placeholder="Price per kg (KSh)" required>
+        <input type="file" name="image" id="image-upload" accept="image/*" required>
+        <img id="image-preview" style="width:100px; display:none; margin-top:10px; border-radius:8px;">
+        <button type="submit">Add Produce</button>
+    </form>
+</section> -->
+
+<!-- My Listings -->
+<!-- <section class="my-produce" id="my-produce">
+    <h2>My Listings</h2>
+    <div id="produce-list">
+        {% for produce in produce_list %}
+        <div class="produce-item">
+            <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
+            <p>{{ produce.name }}</p>
+            <p>KSh {{ produce.price }} / kg</p>
+            <p>Quantity: {{ produce.quantity }} kg</p>
+        </div>
+        {% empty %}
+        <p>No produce listed yet.</p>
+        {% endfor %}
+    </div>
+</section> -->
+
+<!-- Marketplace Preview -->
+<!-- <section class="marketplace" id="marketplace">
+    <h2>Marketplace Preview</h2>
+    <div id="marketplace-list">
+        {% for produce in marketplace_list %}
+        <div class="produce-item">
+            <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
+            <p>{{ produce.name }}</p>
+            <p>KSh {{ produce.price }} / kg</p>
+            <p>Available: {{ produce.quantity }} kg</p>
+        </div>
+        {% empty %}
+        <p>No produce listed yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html> --> 

@@ -1,0 +1,120 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Theme Colors */
+:root {
+    --green: #4EA685;
+    --black: #000000;
+    --white: #ffffff;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: var(--green);
+    color: var(--white);
+}
+
+header .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Login Page */
+.login-page {
+    padding: 50px;
+    text-align: center;
+    background-color: #eaf6f4;
+}
+
+.login-page h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: var(--green);
+}
+
+.role-selection {
+    margin-bottom: 30px;
+}
+
+.role-login-btn {
+    padding: 10px 25px;
+    margin: 5px;
+    font-size: 1rem;
+    border: none;
+    background-color: var(--green);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: 5px;
+    transition: transform 0.2s;
+}
+
+.role-login-btn:hover {
+    background-color: #3e826f;
+    transform: scale(1.05);
+}
+
+/* Role-specific login form */
+.role-login-form {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: var(--white);
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+}
+
+.role-login-form input {
+    padding: 12px;
+    border: 1px solid var(--green);
+    border-radius: 5px;
+}
+
+.role-login-form button {
+    padding: 12px;
+    border: none;
+    background-color: var(--black);
+    color: var(--white);
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.role-login-form button:hover {
+    background-color: #333;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--green);
+    color: var(--white);
+}

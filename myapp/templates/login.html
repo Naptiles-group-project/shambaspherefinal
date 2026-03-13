@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShambaSphere Login</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">ShambaSphere</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#login-page">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Login Page Section -->
+    <section class="login-page" id="login-page">
+        <h2>Login to ShambaSphere</h2>
+
+        <div class="role-selection">
+            <button class="role-login-btn" data-role="farmer">Farmer</button>
+            <button class="role-login-btn" data-role="buyer">Buyer</button>
+            <button class="role-login-btn" data-role="institution">Institution</button>
+        </div>
+
+        <div id="login-form-container">
+            <!-- JS will inject role-specific login forms here -->
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 ShambaSphere. All rights reserved.</p>
+    </footer>
+
+    <script src="login.js"></script>
+</body>
+</html>

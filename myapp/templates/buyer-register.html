@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buyer Registration - ShambaSphere</title>
+<link rel="stylesheet" href="buyer-register.css">
+</head>
+<body>
+
+<div class="form-wrapper">
+
+    <div class="form-panel">
+        <h2>Create Buyer Account</h2>
+
+        <form id="buyerRegisterForm">
+
+            <!-- Profile Upload -->
+            <div class="profile-upload">
+                <img id="profilePreview" src="https://via.placeholder.com/100" alt="Profile">
+                <input type="file" id="profileImage" accept="image/*">
+            </div>
+
+            <div class="row">
+                <input type="text" id="firstName" placeholder="First Name" required>
+                <input type="text" id="lastName" placeholder="Last Name" required>
+            </div>
+
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="tel" id="phone" placeholder="Phone Number (07XXXXXXXX)" required>
+
+            <div class="row">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="email" id="confirmEmail" placeholder="Confirm Email" required>
+            </div>
+
+            <select id="county" required>
+                <option value="">Select County</option>
+            </select>
+
+            <input type="text" id="address" placeholder="Physical Address" required>
+
+            <div class="row">
+                <input type="date" id="dob" required>
+                <select id="gender" required>
+                    <option value="">Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Prefer not to say</option>
+                </select>
+            </div>
+
+            <div class="password-group">
+                <input type="password" id="password" placeholder="Password" required>
+                <span class="toggle-password" onclick="togglePassword('password')">👁</span>
+            </div>
+
+            <div id="strengthMessage"></div>
+
+            <div class="password-group">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                <span class="toggle-password" onclick="togglePassword('confirmPassword')">👁</span>
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="terms">
+                <label for="terms">I agree to Terms & Conditions</label>
+            </div>
+
+            <button type="submit">Register</button>
+
+            <p id="message"></p>
+
+        </form>
+    </div>
+
+</div>
+
+<script src="buyer-register.js"></script>
+</body>
+</html>

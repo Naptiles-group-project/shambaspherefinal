@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advisor Dashboard - ShambaSphere</title>
+<link rel="stylesheet" href="advisor-dashboard.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">ShambaSphere - Advisor</div>
+</header>
+
+<div class="container">
+
+    <!-- Profile Section -->
+   <!-- Profile Section -->
+<div class="profile-section">
+    <div class="profile-wrapper" id="profileWrapper">
+        <img id="advisorImage" src="https://via.placeholder.com/80">
+        <div>
+            <h3 id="advisorName">Advisor Name</h3>
+            <p id="advisorSpecialization">Specialization</p>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="profile-dropdown" id="profileDropdown">
+            <button onclick="openEditProfile()">Edit Profile</button>
+            <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="stat-card">
+            <h3 id="totalPosts">0</h3>
+            <p>Total Posts</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="totalReach">0</h3>
+            <p>Farmers Reached</p>
+        </div>
+    </section>
+
+    <!-- Create Advisory Post -->
+    <section class="create-post">
+        <h2>Create Advisory Post</h2>
+        <form id="postForm">
+            <input type="text" id="postTitle" placeholder="Post Title" required>
+
+            <select id="category" required>
+                <option value="">Select Category</option>
+                <option>Crop Management</option>
+                <option>Livestock</option>
+                <option>Pest & Disease</option>
+                <option>Weather Advisory</option>
+                <option>Policy Update</option>
+            </select>
+
+            <input type="text" id="targetCrop" placeholder="Target Crop (Optional)">
+            <input type="text" id="targetCounty" placeholder="Target County (Optional)">
+
+            <textarea id="postContent" placeholder="Write advisory content..." rows="4" required></textarea>
+
+            <input type="file" id="postImage" accept="image/*">
+
+            <button type="submit">Publish Post</button>
+        </form>
+    </section>
+
+    <!-- My Posts -->
+    <section>
+        <h2>My Advisory Posts</h2>
+        <div id="postsContainer"></div>
+    </section>
+
+</div>
+
+<script src="advisor-dashboard.js"></script>
+</body>
+</html>
