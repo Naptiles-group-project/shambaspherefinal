@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
 <meta charset="UTF-8">
 <title>Advisor Registration</title>
-<link rel="stylesheet" href="advisor-register.css">
+<link rel="stylesheet" href="{% static 'css/advisor-register.css' %}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -15,17 +16,17 @@
 
     <form id="advisorForm">
 
-        <input type="text" id="fullName" placeholder="Full Name" required>
+        <input type="text" id="fullName" name="fullName" placeholder="Full Name" required>
 
-        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="email" id="email" name="email" placeholder="Email Address" required>
 
-        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <input type="tel" id="phone" name="phone" placeholder="Phone Number" required>
 
-        <input type="text" id="specialization" placeholder="Specialization (e.g Pest Control)" required>
+        <input type="text" id="specialization" name="specialization" placeholder="Specialization (e.g Pest Control)" required>
 
-        <textarea id="bio" placeholder="Short Professional Bio" required></textarea>
+        <textarea id="bio" name="bio" placeholder="Short Professional Bio" required></textarea>
 
-        <input type="password" id="password" placeholder="Create Password" required>
+        <input type="password" id="password" name="password" placeholder="Create Password" required>
 
         <button type="submit">Register</button>
 
@@ -35,6 +36,6 @@
 
 </div>
 
-<script src="advisor-register.js"></script>
+<script src="{% static 'js/advisor-register.js' %}"></script>
 </body>
 </html>

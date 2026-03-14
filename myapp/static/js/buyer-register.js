@@ -51,16 +51,34 @@ document.getElementById("password").addEventListener("input", function(){
     }
 });
 
-// Form validation
-document.getElementById("buyerRegisterForm").addEventListener("submit", function(e){
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+const form = document.getElementById("buyerRegisterForm");
+
+form.addEventListener("submit", async function(e) {
     e.preventDefault();
 
+    // Validation
     const email = document.getElementById("email").value;
     const confirmEmail = document.getElementById("confirmEmail").value;
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
-    const terms = document.getElementById("terms").checked;
     const phone = document.getElementById("phone").value;
+    const terms = document.getElementById("terms").checked;
     const message = document.getElementById("message");
 
     if (email !== confirmEmail) {
@@ -87,50 +105,29 @@ document.getElementById("buyerRegisterForm").addEventListener("submit", function
         return;
     }
 
-    message.textContent = "Registration Successful!";
-    message.style.color = "green";
-
-    this.reset();
-});
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-const csrftoken = getCookie('csrftoken');
-
-
-form.addEventListener("submit", async function(e) {
-    e.preventDefault();
-
+    // Submit via AJAX
     const formData = new FormData(form);
 
-    const response = await fetch("/farmer-register/", {
-        method: "POST",
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        body: formData
-    });
+    try {
+        const response = await fetch("/buyer-register/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrftoken
+            },
+            body: formData
+        });
 
-    const data = await response.json();
+        const data = await response.json();
 
-    if (data.success) {
-        alert("Farmer registered successfully!");
-        window.location.href = "/farmer-dashboard/";
-    } else {
-        alert(data.error);
+        if (data.success) {
+            window.location.href = data.redirect_url;
+        } else {
+            message.textContent = data.error;
+            message.style.color = "red";
+        }
+    } catch (err) {
+        message.textContent = "An error occurred. Try again.";
+        message.style.color = "red";
+        console.error(err);
     }
 });

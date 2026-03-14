@@ -1,48 +1,109 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    {% load static %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Buyer Dashboard - ShambaSphere</title>
-<link rel="stylesheet" href="buyer-dashboard.css">
+
+<link rel="stylesheet" href="{% static 'css/buyer-dashboard.css' %}">
 </head>
+
 <body>
 
 <header>
-    <div class="logo">ShambaSphere</div>
+<div class="logo">ShambaSphere</div>
 
-    <nav>
-        <a href="marketplace.html">Marketplace</a>
-        <a href="#orders">My Orders</a>
-        <a href="profile.html">Profile</a>
-        <a href="#" onclick="logout()">Logout</a>
-    </nav>
+<nav>
+<a href="{% url 'marketplace' %}">Marketplace</a>
+<a href="#orders">My Orders</a>
+<a href="#">Profile</a>
+<a href="{% url 'logout' %}">Logout</a>
+</nav>
 </header>
 
 <!-- STATS -->
 <section class="stats">
-    <div class="stat-card">
-        <h3 id="totalOrders">0</h3>
-        <p>Total Orders</p>
-    </div>
-    <div class="stat-card">
-        <h3 id="totalSpent">KSh 0</h3>
-        <p>Total Spent</p>
-    </div>
+<div class="stat-card">
+<h3>{{ total_orders }}</h3>
+<p>Total Orders</p>
+</div>
+
+<div class="stat-card">
+<h3>KSh {{ total_spent }}</h3>
+<p>Total Spent</p>
+</div>
 </section>
 
 <!-- AVAILABLE PRODUCTS -->
 <section class="products">
-    <h2>Available Products</h2>
-    <div id="productsContainer" class="products-grid"></div>
+<h2>Available Products</h2>
+
+<div class="products-grid">
+
+{% for product in produce_list %}
+
+<div class="product-card">
+
+<img src="{{ product.image.url }}">
+
+<h3>{{ product.name }}</h3>
+
+<p>Seller: {{ product.farmer.user.username }}</p>
+
+<p>KSh {{ product.price }}</p>
+
+<form method="POST" action="{% url 'create_order' %}">
+{% csrf_token %}
+<input type="hidden" name="produce_id" value="{{ product.id }}">
+
+<input type="hidden" name="buyer_name" value="{{ request.user.username }}">
+<input type="hidden" name="buyer_phone" value="N/A">
+<input type="hidden" name="buyer_location" value="Nairobi">
+
+<input type="hidden" name="quantity" value="1">
+
+<button type="submit">Order Now</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+</div>
 </section>
 
 <!-- ORDER HISTORY -->
 <section class="orders" id="orders">
-    <h2>My Orders</h2>
-    <div id="ordersContainer"></div>
+
+<h2>My Orders</h2>
+
+{% for order in orders %}
+
+<div class="order-card">
+
+<h4>{{ order.produce.name }}</h4>
+
+<p>Price: KSh {{ order.total_price }}</p>
+
+<p>Seller: {{ order.produce.farmer.user.username }}</p>
+
+<p>Date: {{ order.created_at }}</p>
+
+<p>Status: {{ order.status }}</p>
+
+</div>
+
+{% empty %}
+
+<p>No orders yet.</p>
+
+{% endfor %}
+
 </section>
 
-<script src="buyer-dashboard.js"></script>
 </body>
 </html>

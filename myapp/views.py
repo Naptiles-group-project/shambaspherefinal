@@ -218,8 +218,10 @@ def login_view(request):
 
             if FarmerProfile.objects.filter(user=user).exists():
                 return redirect("farmer_dashboard")
+            else:
+                 return redirect("buyer_dashboard")
 
-            # Add other roles like AdvisorProfile if needed
+            # Add other roles like AdvisorProfile 
             # if AdvisorProfile.objects.filter(user=user).exists():
             #     return redirect("advisor_dashboard")
 
@@ -602,8 +604,9 @@ def delete_produce(request, produce_id):
 
 # # buyer register
 def buyer_register(request):
-    # Similar to farmer_register but without farm details
+
     if request.method == "POST":
+
         first_name = request.POST.get("firstName")
         last_name = request.POST.get("lastName")
         username = request.POST.get("username")
@@ -612,9 +615,14 @@ def buyer_register(request):
         county = request.POST.get("county")
         password = request.POST.get("password")
 
+        # check if username exists
         if User.objects.filter(username=username).exists():
-            return JsonResponse({"success": False, "error": "Username already exists"})
+            return JsonResponse({
+                "success": False,
+                "error": "Username already exists"
+            })
 
+        # create user
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -623,11 +631,13 @@ def buyer_register(request):
             last_name=last_name
         )
 
-        # You can create a BuyerProfile if you have one, or just use the User model
-
+        # auto login
         login(request, user)
 
-        return JsonResponse({"success": True, "redirect_url": "/marketplace/"})
+        return JsonResponse({
+            "success": True,
+            "redirect_url": "/buyer-dashboard/"
+        })
 
     return render(request, "buyer-register.html")
 
@@ -637,3 +647,28 @@ def buyer_register(request):
 
 def advisor_register(request):
     return render(request, "advisor-register.html")
+
+
+# buyer dashboard view
+from django.contrib.auth.decorators import login_required
+from .models import Produce, Order
+
+@login_required
+def buyer_dashboard(request):
+
+    produce_list = Produce.objects.filter(status="Available")
+
+    orders = Order.objects.filter(buyer_name=request.user.username)
+
+    total_orders = orders.count()
+
+    total_spent = sum([o.total_price for o in orders])
+
+    context = {
+        "produce_list": produce_list,
+        "orders": orders,
+        "total_orders": total_orders,
+        "total_spent": total_spent
+    }
+
+    return render(request, "buyer-dashboard.html", context)
