@@ -44,11 +44,67 @@
     </aside>
 
     <!-- PRODUCTS -->
-    <section class="products-section">
-        <div class="products-grid" id="productsContainer">
-            <!-- Products Render Here -->
+  <section class="products-section">
+    <div class="products-grid" id="productsContainer">
+
+        {% for produce in produce_list %}
+        <div class="product-card">
+
+            <img src="{{ produce.image.url }}" alt="{{ produce.name }}">
+
+            <h4>{{ produce.name }}</h4>
+
+            <p>KSh {{ produce.price }} / kg</p>
+
+            <p>Quantity: {{ produce.quantity }} kg</p>
+
+            <p>Farmer: {{ produce.farmer.user.username }}</p>
+
+            <button onclick="addToCart('{{ produce.name }}', '{{ produce.price }}')">
+                Add to Cart
+            </button>
+
+            <button onclick="openOrderModal(`{{produce.id}}`, '{{ produce.name }}', '{{ produce.price }}')">Buy Now</button>
+
+
+
         </div>
-    </section>
+
+<!-- order modal -->
+
+        <div id="orderModal" class="cart-modal">
+    <div class="cart-card">
+
+        <span onclick="closeOrderModal()">×</span>
+
+        <h3 id="productName"></h3>
+
+        <input type="text" id="buyerName" placeholder="Your Name">
+
+        <input type="text" id="buyerPhone" placeholder="Phone Number">
+
+        <input type="text" id="buyerLocation" placeholder="Delivery Location">
+
+        <input type="number" id="orderQuantity" placeholder="Quantity (kg)">
+
+        <button onclick="submitOrder()">Place Order</button>
+
+    </div>
+</div>
+
+
+
+
+        {% empty %}
+        <p>No products available.</p>
+        {% endfor %}
+
+    </div>
+
+
+
+</section>
+
 
 </div>
 

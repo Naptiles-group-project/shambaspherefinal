@@ -1,42 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShambaSphere Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
 
-    <header>
-        <div class="logo">ShambaSphere</div>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="#login-page">Login</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <div class="logo">🌾 ShambaSphere</div>
+</header>
 
-    <!-- Login Page Section -->
-    <section class="login-page" id="login-page">
-        <h2>Login to ShambaSphere</h2>
+<section class="login-page">
+    <h2>Login to ShambaSphere</h2>
 
-        <div class="role-selection">
-            <button class="role-login-btn" data-role="farmer">Farmer</button>
-            <button class="role-login-btn" data-role="buyer">Buyer</button>
-            <button class="role-login-btn" data-role="institution">Institution</button>
-        </div>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
-        <div id="login-form-container">
-            <!-- JS will inject role-specific login forms here -->
-        </div>
-    </section>
+    <form method="POST" action="{% url 'login' %}" class="login-form">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</section>
 
-    <footer>
-        <p>&copy; 2026 ShambaSphere. All rights reserved.</p>
-    </footer>
+<footer>
+    <p>&copy; 2026 ShambaSphere. All rights reserved.</p>
+</footer>
 
-    <script src="login.js"></script>
 </body>
 </html>

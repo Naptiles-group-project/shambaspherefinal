@@ -1,152 +1,3 @@
- <!DOCTYPE html>
-<html lang="en">
-<head>
-    {%load static%}
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Farmer Dashboard - ShambaSphere</title>
-<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-</head>
-<body>
-<header>
-<div class="logo">ShambaSphere</div>
-<nav>
-<ul>
-<li><a href="index.html">Marketplace</a></li>
-<li><a href="#add-produce-section">Add Produce</a></li>
-<li><a href="#my-produce">My Listings</a></li>
-<li><a href="#orders-section">Orders</a></li>
-<li><a href="#">Logout</a></li>
-</ul>
-</nav>
-</header>
-
-<!-- Dashboard Stats -->
-<section class="dashboard-stats" id="dashboard-stats">
-<h2>Dashboard Stats</h2>
-<div class="stats-container">
-<div class="stat">
-<h3 id="total-listings">0</h3>
-<p>Total Listings</p>
-</div>
-<div class="stat">
-<h3 id="total-orders">0</h3>
-<p>Total Orders</p>
-</div>
-<div class="stat">
-<h3 id="total-income">KSh 0</h3>
-<p>Estimated Income</p>
-</div>
-</div>
-</section>
-
-
- <!-- Add Produce Section -->
-<section class="add-produce-section" id="add-produce-section">
-<h2>Add New Produce</h2>
-<form id="add-produce-form" method="post" enctype="multipart/form-data">
-{% csrf_token %}
-<input type="text" name="produceName" placeholder="Produce Name" required>
-<input type="number" name="quantity" placeholder="Quantity (kg)" required>
-<input type="number" name="price" placeholder="Price per kg (KSh)" required> -->
-
-<!-- Image Upload -->
- <input type="file" name="image" id="image-upload" accept="image/*" required>
-<img id="image-preview" style="width:100px; display:none; margin-top:10px; border-radius:8px;">
-
-<button type="submit">Add Produce</button>
-</form>
-</section>
-
-<!-- My Listings -->
- <section class="my-produce" id="my-produce">
-<h2>My Listings</h2>
-<div id="produce-list">
-    {% for produce in produce_list %}
-    <div class="produce-item"> 
-         <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
-        <p>{{ produce.name }}</p>
-        <p>{{ produce.quantity }} kg</p>
-        <p>KSh {{ produce.price }}</p>
-        <p>Status: {{ produce.status }}</p>
-    </div>
-    {% empty %}
-    <p>No produce listed yet.</p>
-    {% endfor %}
-</div>
-</section>
-
-<!-- Marketplace Preview -->
- <section class="marketplace" id="marketplace">
-<h2>Marketplace Preview</h2>
-<div id="marketplace-list">
-    {% for produce in marketplace_list %}
-    <div class="marketplace-item">
-        <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
-        <p>{{ produce.name }}</p>
-        <p>{{ produce.quantity }} kg</p>
-        <p>KSh {{ produce.price }}</p>
-        <p>Farmer: {{ produce.farmer.user.username }}</p>
-    </div>
-    {% empty %}
-    <p>No produce available in marketplace yet.</p>
-    {% endfor %}
-</div>
-</section> 
-
-<!-- Orders Section -->
- <section class="orders-section" id="orders-section">
-<h2>Orders Received</h2>
-<div id="orders-list">
-<p>No orders yet.</p>
-</div>
-</section>
-
-<!-- Marketplace Preview -->
-<section class="marketplace" id="marketplace">
-<h2>Marketplace Preview</h2>
-<div id="marketplace-list"></div>
-</section> 
-
-<!-- EDIT PRODUCT MODAL -->
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
-        <h3>Edit Produce</h3>
-
-        <input type="text" id="editName">
-        <input type="number" id="editQuantity">
-        <input type="number" id="editPrice">
-
-        <select id="editStatus">
-            <option value="Available">Available</option>
-            <option value="Sold">Sold</option>
-        </select>
-
-        <input type="file" id="editImage" accept="image/*">
-
-        <button onclick="saveChanges()">Save Changes</button>
-    </div>
-</div>
-
-<script src="{% static 'js/dashboard.js' %}"></script>
-</body>
-</html> 
-
-<!-- 
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Dashboard - ShambaSphere</title>
-    <link rel="stylesheet" href="{% static 'css/farmer-dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 </head>
 <body>
+
 <header>
     <div class="logo">ShambaSphere</div>
     <nav>
@@ -164,71 +16,37 @@
             <li><a href="{% url 'marketplace' %}">Marketplace</a></li>
             <li><a href="#add-produce-section">Add Produce</a></li>
             <li><a href="#my-produce">My Listings</a></li>
-            <li><a href="#">Logout</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </nav>
 </header>
 
-<!-- Dashboard Stats -->
-<!-- <section class="dashboard-stats" id="dashboard-stats">
-    <h2>Dashboard Stats</h2>
-    <div class="stats-container">
-        <div class="stat">
-            <h3>{{ total_listings }}</h3>
-            <p>Total Listings</p>
-        </div>
-        <div class="stat">
-            <h3>{{ total_orders }}</h3>
-            <p>Total Orders</p>
-        </div>
-        <div class="stat">
-            <h3>KSh {{ total_income }}</h3>
-            <p>Estimated Income</p>
-        </div>
-    </div>
-</section> -->
-
 <!-- Add Produce Section -->
-<!-- <section class="add-produce-section" id="add-produce-section">
+<section id="add-produce-section">
     <h2>Add New Produce</h2>
-    <form id="add-produce-form" method="post" enctype="multipart/form-data">
+    <form id="add-produce-form" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="text" name="produceName" placeholder="Produce Name" required>
         <input type="number" name="quantity" placeholder="Quantity (kg)" required>
         <input type="number" name="price" placeholder="Price per kg (KSh)" required>
         <input type="file" name="image" id="image-upload" accept="image/*" required>
-        <img id="image-preview" style="width:100px; display:none; margin-top:10px; border-radius:8px;">
         <button type="submit">Add Produce</button>
     </form>
-</section> -->
+</section>
 
 <!-- My Listings -->
-<!-- <section class="my-produce" id="my-produce">
+<section id="my-produce">
     <h2>My Listings</h2>
     <div id="produce-list">
         {% for produce in produce_list %}
-        <div class="produce-item">
+        <div class="produce-item" id="produce-{{ produce.id }}">
             <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
             <p>{{ produce.name }}</p>
-            <p>KSh {{ produce.price }} / kg</p>
-            <p>Quantity: {{ produce.quantity }} kg</p>
-        </div>
-        {% empty %}
-        <p>No produce listed yet.</p>
-        {% endfor %}
-    </div>
-</section> -->
-
-<!-- Marketplace Preview -->
-<!-- <section class="marketplace" id="marketplace">
-    <h2>Marketplace Preview</h2>
-    <div id="marketplace-list">
-        {% for produce in marketplace_list %}
-        <div class="produce-item">
-            <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
-            <p>{{ produce.name }}</p>
-            <p>KSh {{ produce.price }} / kg</p>
-            <p>Available: {{ produce.quantity }} kg</p>
+            <p>{{ produce.quantity }} kg</p>
+            <p>KSh {{ produce.price }}</p>
+            <p>Status: {{ produce.status }}</p>
+            <button class="edit-btn" data-id="{{ produce.id }}">Edit</button>
+            <button class="delete-btn" data-id="{{ produce.id }}">Delete</button>
         </div>
         {% empty %}
         <p>No produce listed yet.</p>
@@ -236,6 +54,210 @@
     </div>
 </section>
 
-<script src="{% static 'js/dashboard.js' %}"></script>
+<!-- Marketplace Preview -->
+<section id="marketplace">
+    <h2>Marketplace Preview</h2>
+    <div id="marketplace-list">
+        {% for produce in marketplace_list %}
+        <div class="marketplace-item" id="marketplace-{{ produce.id }}">
+            <img src="{{ produce.image.url }}" alt="{{ produce.name }}" width="100">
+            <p>{{ produce.name }}</p>
+            <p>{{ produce.quantity }} kg</p>
+            <p>KSh {{ produce.price }}</p>
+            <p>Farmer: {{ produce.farmer.user.username }}</p>
+        </div>
+        {% empty %}
+        <p>No produce available in marketplace yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h3>Edit Produce</h3>
+        <input type="text" id="editName" placeholder="Produce Name">
+        <input type="number" id="editQuantity" placeholder="Quantity">
+        <input type="number" id="editPrice" placeholder="Price">
+        <select id="editStatus">
+            <option value="Available">Available</option>
+            <option value="Sold">Sold</option>
+        </select>
+        <input type="file" id="editImage" accept="image/*">
+        <button id="saveChangesBtn">Save Changes</button>
+    </div>
+</div>
+
+<script>
+// ---------------- CSRF Helper ----------------
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+// ---------------- Add Produce ----------------
+document.getElementById('add-produce-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const form = e.target;
+    const data = new FormData(form);
+
+    fetch("{% url 'farmer_dashboard' %}", {
+        method: "POST",
+        headers: { "X-CSRFToken": csrftoken },
+        body: data
+    })
+    .then(res => res.json())
+    .then(json => {
+        if(json.success){
+            const produce = json.produce;
+
+            // My Listings
+            const produceList = document.getElementById('produce-list');
+            const div = document.createElement('div');
+            div.className = 'produce-item';
+            div.id = `produce-${produce.id}`;
+            div.innerHTML = `
+                <img src="${produce.image_url}" alt="${produce.name}" width="100">
+                <p>${produce.name}</p>
+                <p>${produce.quantity} kg</p>
+                <p>KSh ${produce.price}</p>
+                <p>Status: ${produce.status}</p>
+                <button class="edit-btn" data-id="${produce.id}">Edit</button>
+                <button class="delete-btn" data-id="${produce.id}">Delete</button>
+            `;
+            produceList.prepend(div);
+
+            attachEditDeleteEvents(div, produce.id);
+
+            // Marketplace
+            if(produce.status === 'Available'){
+                const marketplaceList = document.getElementById('marketplace-list');
+                const divMarket = document.createElement('div');
+                divMarket.className = 'marketplace-item';
+                divMarket.id = `marketplace-${produce.id}`;
+                divMarket.innerHTML = `
+                    <img src="${produce.image_url}" alt="${produce.name}" width="100">
+                    <p>${produce.name}</p>
+                    <p>${produce.quantity} kg</p>
+                    <p>KSh ${produce.price}</p>
+                    <p>Farmer: ${produce.farmer_username}</p>
+                `;
+                marketplaceList.prepend(divMarket);
+            }
+
+            form.reset();
+        } else {
+            alert("Failed to add produce: " + json.error);
+        }
+    }).catch(err => console.error(err));
+});
+
+// ---------------- Edit & Delete Handlers ----------------
+function attachEditDeleteEvents(container, produceId){
+    // Edit
+    container.querySelector('.edit-btn').addEventListener('click', e => {
+        document.getElementById('editName').value = container.querySelector('p:nth-child(2)').innerText;
+        document.getElementById('editQuantity').value = container.querySelector('p:nth-child(3)').innerText.replace(' kg','');
+        document.getElementById('editPrice').value = container.querySelector('p:nth-child(4)').innerText.replace('KSh ','');
+        document.getElementById('editStatus').value = container.querySelector('p:nth-child(5)').innerText.replace('Status: ','');
+        document.getElementById('saveChangesBtn').setAttribute('data-id', produceId);
+        document.getElementById('editModal').style.display = 'block';
+    });
+
+    // Delete
+    container.querySelector('.delete-btn').addEventListener('click', e => {
+        if(!confirm('Are you sure you want to delete this produce?')) return;
+        fetch(`/delete-produce/${produceId}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken }
+        })
+        .then(res => res.json())
+        .then(json => {
+            if(json.success){
+                container.remove();
+                const marketItem = document.getElementById(`marketplace-${produceId}`);
+                if(marketItem) marketItem.remove();
+            } else alert('Delete failed: ' + json.error);
+        }).catch(err => console.error(err));
+    });
+}
+
+// Attach for existing items
+document.querySelectorAll('.produce-item').forEach(div => {
+    const produceId = div.id.split('-')[1];
+    attachEditDeleteEvents(div, produceId);
+});
+
+// ---------------- Close Modal ----------------
+document.querySelector('.close-btn').addEventListener('click', () => {
+    document.getElementById('editModal').style.display = 'none';
+});
+
+// ---------------- Save Edit Changes ----------------
+document.getElementById('saveChangesBtn').addEventListener('click', () => {
+    const produceId = document.getElementById('saveChangesBtn').getAttribute('data-id');
+    const data = new FormData();
+    data.append('name', document.getElementById('editName').value);
+    data.append('quantity', document.getElementById('editQuantity').value);
+    data.append('price', document.getElementById('editPrice').value);
+    data.append('status', document.getElementById('editStatus').value);
+    const imageFile = document.getElementById('editImage').files[0];
+    if(imageFile) data.append('image', imageFile);
+    data.append('csrfmiddlewaretoken', csrftoken);
+
+    fetch(`/edit-produce/${produceId}/`, { method: 'POST', body: data })
+    .then(res => res.json())
+    .then(json => {
+        if(json.success){
+            const container = document.getElementById(`produce-${produceId}`);
+            container.querySelector('p:nth-child(2)').innerText = json.produce.name;
+            container.querySelector('p:nth-child(3)').innerText = json.produce.quantity + ' kg';
+            container.querySelector('p:nth-child(4)').innerText = 'KSh ' + json.produce.price;
+            container.querySelector('p:nth-child(5)').innerText = 'Status: ' + json.produce.status;
+            if(json.produce.image_url) container.querySelector('img').src = json.produce.image_url;
+
+            // Marketplace update
+            const marketItem = document.getElementById(`marketplace-${produceId}`);
+            if(json.produce.status === 'Available'){
+                if(marketItem){
+                    marketItem.querySelector('p:nth-child(2)').innerText = json.produce.name;
+                    marketItem.querySelector('p:nth-child(3)').innerText = json.produce.quantity + ' kg';
+                    marketItem.querySelector('p:nth-child(4)').innerText = 'KSh ' + json.produce.price;
+                    if(json.produce.image_url) marketItem.querySelector('img').src = json.produce.image_url;
+                } else {
+                    const divMarket = document.createElement('div');
+                    divMarket.className = 'marketplace-item';
+                    divMarket.id = `marketplace-${produceId}`;
+                    divMarket.innerHTML = `
+                        <img src="${json.produce.image_url}" alt="${json.produce.name}" width="100">
+                        <p>${json.produce.name}</p>
+                        <p>${json.produce.quantity} kg</p>
+                        <p>KSh ${json.produce.price}</p>
+                        <p>Farmer: ${json.produce.farmer_username}</p>
+                    `;
+                    document.getElementById('marketplace-list').prepend(divMarket);
+                }
+            } else if(json.produce.status === 'Sold' && marketItem){
+                marketItem.remove();
+            }
+
+            document.getElementById('editModal').style.display = 'none';
+        } else alert('Update failed: ' + json.error);
+    }).catch(err => console.error(err));
+});
+</script>
+
 </body>
-</html> --> 
+</html>

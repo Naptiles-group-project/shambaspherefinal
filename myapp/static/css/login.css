@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 /* General Reset */
 * {
     margin: 0;
@@ -111,6 +118,7 @@ header nav ul li a:hover {
     background-color: #333;
 }
 
+
 /* Footer */
 footer {
     text-align: center;
@@ -118,3 +126,72 @@ footer {
     background-color: var(--green);
     color: var(--white);
 }
+
+
+ 
+
+
+
+
+body{
+    font-family: Arial;
+    background:#f4f6f5;
+    margin:0;
+}
+
+header{
+    background:#1b5e20;
+    color:white;
+    padding:15px 40px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.logo{
+    font-weight:bold;
+    font-size:20px;
+}
+
+.login-page{
+    width:350px;
+    margin:100px auto;
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.login-page h2{
+    margin-bottom:25px;
+    color:#1b5e20;
+}
+
+.login-form input{
+    width:100%;
+    padding:12px;
+    margin-bottom:15px;
+    border:1px solid #ddd;
+    border-radius:6px;
+}
+
+.login-form button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#2e7d32;
+    color:white;
+    font-size:16px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.login-form button:hover{
+    background:#1b5e20;
+}
+
+
+
+
+
+

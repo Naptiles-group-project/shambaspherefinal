@@ -3,7 +3,7 @@
 =================================*/
 
 // Load farmer products from localStorage
-let products = JSON.parse(localStorage.getItem("products")) || [];
+// let products = JSON.parse(localStorage.getItem("products")) || [];
 
 // Load cart from storage
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -93,17 +93,32 @@ function toggleCart(){
     cartModal.classList.toggle("active");
 }
 
-function addToCart(id){
+// function addToCart(id){
 
-    const product = products.find(p => p.id === id);
+//     const product = products.find(p => p.id === id);
 
-    if(!product) return;
+//     if(!product) return;
 
-    cart.push(product);
+//     cart.push(product);
+
+//     saveCart();
+//     updateCart();
+// }
+
+function addToCart(name, price){
+
+    const item = {
+        name: name,
+        price: Number(price)
+    };
+
+    cart.push(item);
 
     saveCart();
     updateCart();
 }
+
+
 
 function removeFromCart(index){
     cart.splice(index,1);
@@ -167,3 +182,55 @@ function saveCart(){
 =================================*/
 
 updateCart();
+
+
+
+
+// Order JavaScript
+let selectedProduct = null;
+
+function openOrderModal(id, name, price){
+
+    selectedProduct = {
+        id:id,
+        price:price
+    };
+
+    document.getElementById("productName").innerText = name;
+
+    document.getElementById("orderModal").classList.add("active");
+}
+
+function closeOrderModal(){
+    document.getElementById("orderModal").classList.remove("active");
+}
+
+function submitOrder(){
+
+    const name = document.getElementById("buyerName").value;
+    const phone = document.getElementById("buyerPhone").value;
+    const location = document.getElementById("buyerLocation").value;
+    const quantity = document.getElementById("orderQuantity").value;
+
+    const formData = new FormData();
+
+    formData.append("produce_id", selectedProduct.id);
+    formData.append("quantity", quantity);
+    formData.append("buyer_name", name);
+    formData.append("buyer_phone", phone);
+    formData.append("buyer_location", location);
+
+    fetch("/create-order/", {
+        method:"POST",
+        body:formData
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        if(data.success){
+            alert("Order placed successfully!");
+            closeOrderModal();
+        }
+    });
+
+}

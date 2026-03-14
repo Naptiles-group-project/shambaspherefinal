@@ -16,6 +16,7 @@
                 <li><a href="#hero">Home</a></li>
                 <li><a href="#features">About</a></li>
                 <li><a href="#login-section">Login/Register</a></li>
+                <li><a href="{%url 'marketplace' %}">Marketplace</a></li>
             </ul>
         </nav>
     </header>
@@ -32,14 +33,14 @@
             </div>
         </div>
         <div class="slide">
-            <img src="images/pexels-freddie-hermosora-tayoan-2243861-3923996.jpg" alt="Marketplace">
+            <img src="{%static 'images/pexels-freddie-hermosora-tayoan-2243861-3923996.jpg'%}" alt="Marketplace">
             <div class="slide-caption">
                 <h1>Online Marketplace</h1>
                 <p>List produce and connect directly with buyers.</p>
             </div>
         </div>
         <div class="slide">
-            <img src="images/elasticcomputefarm-library-1147815_1280.jpg" alt="Knowledge Hub">
+            <img src="{%static 'images/elasticcomputefarm-library-1147815_1280.jpg'%}" alt="Knowledge Hub">
             <div class="slide-caption">
                 <h1>Knowledge Hub</h1>
                 <p>Access verified farming tips and weather updates.</p>
@@ -55,17 +56,17 @@
         <h2>Platform Features</h2>
         <div class="feature-cards">
             <div class="feature-card">
-                <img src="images/pexels-freddie-hermosora-tayoan-2243861-3923996.jpg" alt="Marketplace">
+                <img src="{% static 'images/pexels-freddie-hermosora-tayoan-2243861-3923996.jpg' %}" alt="Marketplace">
                 <h3>Online Marketplace</h3>
                 <p>Farmers can list their produce and buyers can browse and order directly, reducing middlemen and increasing income.</p>
             </div>
             <div class="feature-card">
-                <img src="images/elasticcomputefarm-library-1147815_1280.jpg" alt="Knowledge Hub">
+                <img src="{% static 'images/elasticcomputefarm-library-1147815_1280.jpg' %}" alt="Knowledge Hub">
                 <h3>Knowledge & Advisory Hub</h3>
                 <p>Access verified farming tips, crop management advice, pest/disease control, and weather updates tailored to your location.</p>
             </div>
             <div class="feature-card">
-                <img src="images/download.jpeg" alt="Community">
+                <img src="{% static 'images/download.jpeg' %}" alt="Community">
                 <h3>Role-Based Community</h3>
                 <p>Farmers, buyers, and agricultural institutions each have personalized dashboards to interact and manage their accounts.</p>
             </div>
@@ -117,9 +118,9 @@
 <section class="produce-showcase">
     <h2>Featured Produce</h2>
     <div class="produce-carousel">
-        <div class="produce-item"><img src="images/engin_akyurt-tomatoes-8181194_1280.jpg" alt="Tomatoes"><p>Tomatoes</p></div>
-        <div class="produce-item"><img src="images/pexels-potatoes-1866415_1280.jpg" alt="Potatoes"><p>Potatoes</p></div>
-        <div class="produce-item"><img src="images/pexels-hanamara-3650647.jpg" alt="Carrots"><p>Carrots</p></div>
+        <div class="produce-item"><img src="{% static 'images/engin_akyurt-tomatoes-8181194_1280.jpg' %}" alt="Tomatoes"><p>Tomatoes</p></div>
+        <div class="produce-item"><img src="{% static 'images/pexels-potatoes-1866415_1280.jpg' %}" alt="Potatoes"><p>Potatoes</p></div>
+        <div class="produce-item"><img src="{% static 'images/pexels-hanamara-3650647.jpg' %}" alt="Carrots"><p>Carrots</p></div>
         <button class="prev-produce">&#10094;</button>
         <button class="next-produce">&#10095;</button>
     </div>
@@ -130,8 +131,9 @@
         <h2>Login / Register</h2>
         <div class="role-selection">
            <a href="{% url 'farmer_register' %}"><button class="role-btn" data-role="farmer">Farmer</button></a> 
-            <button class="role-btn" data-role="buyer">Buyer</button>
-            <button class="role-btn" data-role="institution">Institution</button>
+           <a href="{% url 'buyer_register' %}"><button class="role-btn" data-role="buyer">Buyer</button></a>
+           <a href="{% url 'advisor_register' %}"><button class="role-btn" data-role="institution">Advisory</button></a>
+            <p>Already have an account?<a href="{% url 'login' %}"> Login here</a></p>
         </div>
 
         <div id="form-container">
@@ -144,6 +146,6 @@
         <p>&copy; 2026 ShambaSphere. All rights reserved.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

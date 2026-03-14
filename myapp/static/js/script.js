@@ -1,4 +1,8 @@
 // ==========================
+// Landing Page JS for ShambaSphere
+// ==========================
+
+// ==========================
 // Hero Carousel Logic
 // ==========================
 let currentSlide = 0;
@@ -11,7 +15,6 @@ function showSlide(index) {
     slides[index].classList.add('active');
 }
 
-// Prev/Next Button Events
 prevBtn.addEventListener('click', () => {
     currentSlide = (currentSlide === 0) ? slides.length -1 : currentSlide -1;
     showSlide(currentSlide);
@@ -22,7 +25,6 @@ nextBtn.addEventListener('click', () => {
     showSlide(currentSlide);
 });
 
-// Auto-slide every 5 seconds
 setInterval(() => {
     currentSlide = (currentSlide +1) % slides.length;
     showSlide(currentSlide);
@@ -44,72 +46,53 @@ window.addEventListener('scroll', checkFadeIn);
 checkFadeIn(); // Run on page load
 
 // ==========================
-// Learn More Button Smooth Scroll
+// Role-based Registration Form Injection
 // ==========================
-document.getElementById('learnMoreBtn').addEventListener('click', () => {
-    window.scrollTo({
-        top: document.getElementById('features').offsetTop,
-        behavior: 'smooth'
-    });
-});
+// const formContainer = document.getElementById('form-container');
+// const roleButtons = document.querySelectorAll('.role-btn');
+
+// roleButtons.forEach(btn => {
+//     btn.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         const role = btn.getAttribute('data-role');
+//         formContainer.innerHTML = generateRegistrationForm(role);
+//     });
+// });
+
+// function generateRegistrationForm(role) {
+//     let extraFields = '';
+//     if (role === 'farmer') {
+//         extraFields = `
+//             <input type="text" name="farm_name" placeholder="Farm Name" required>
+//             <input type="text" name="location" placeholder="Location" required>
+//             <input type="text" name="crops" placeholder="Crops Grown" required>
+//         `;
+//     } else if (role === 'buyer') {
+//         extraFields = `
+//             <input type="text" name="company_name" placeholder="Company Name / Full Name" required>
+//             <input type="text" name="location" placeholder="Location" required>
+//         `;
+//     } else if (role === 'institution') {
+//         extraFields = `
+//             <input type="text" name="institution_name" placeholder="Institution Name" required>
+//             <input type="text" name="department" placeholder="Department / Expertise" required>
+//         `;
+//     }
+
+//     return `
+//         <form method="POST" action="/farmer-register/" enctype="multipart/form-data" class="role-form">
+//             {% csrf_token %}
+//             <input type="text" name="username" placeholder="Username" required>
+//             <input type="email" name="email" placeholder="Email" required>
+//             <input type="password" name="password" placeholder="Password" required>
+//             ${extraFields}
+//             <button type="submit">Register as ${role.charAt(0).toUpperCase() + role.slice(1)}</button>
+//         </form>
+//     `;
+// }
 
 // ==========================
-// Role-based Form Injection
-// ==========================
-const formContainer = document.getElementById('form-container');
-const roleButtons = document.querySelectorAll('.role-btn');
-
-roleButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const role = btn.getAttribute('data-role');
-        formContainer.innerHTML = generateForm(role);
-    });
-});
-
-// Generate role-specific registration/login form
-function generateForm(role) {
-    let extraFields = '';
-    if (role === 'farmer') {
-        extraFields = `
-            <input type="text" placeholder="Farm Name" required>
-            <input type="text" placeholder="Location" required>
-            <input type="text" placeholder="Crops Grown" required>
-        `;
-    } else if (role === 'buyer') {
-        extraFields = `
-            <input type="text" placeholder="Company Name / Full Name" required>
-            <input type="text" placeholder="Location" required>
-        `;
-    } else if (role === 'institution') {
-        extraFields = `
-            <input type="text" placeholder="Institution Name" required>
-            <input type="text" placeholder="Department / Expertise" required>
-        `;
-    }
-
-    return `
-        <form class="role-form" onsubmit="handleFormSubmit(event, '${role}')">
-            <input type="text" placeholder="Username" required>
-            <input type="email" placeholder="Email" required>
-            <input type="password" placeholder="Password" required>
-            ${extraFields}
-            <button type="submit">Register / Login as ${role.charAt(0).toUpperCase() + role.slice(1)}</button>
-        </form>
-    `;
-}
-
-// ==========================
-// Handle Form Submission
-// ==========================
-function handleFormSubmit(e, role) {
-    e.preventDefault();
-    alert(`Welcome ${role}! Redirecting to your dashboard...`);
-    // Placeholder for dashboard redirection:
-    // Example: window.location.href = `${role}-dashboard.html`;
-}
-
-// ==========================
-// Optional: Back-to-Top Button
+// Back-to-Top Button
 // ==========================
 const backToTop = document.createElement('button');
 backToTop.textContent = "↑";
@@ -128,12 +111,10 @@ window.addEventListener('scroll', () => {
     }
 });
 
-
 // ==========================
 // Statistics Counters Animation
 // ==========================
 const counters = document.querySelectorAll('.counter');
-
 function runCounters() {
     counters.forEach(counter => {
         counter.innerText = '0';
@@ -182,7 +163,6 @@ nextTestimonial.addEventListener('click', () => {
     showTestimonial(testimonialIndex);
 });
 
-// Auto-rotate every 6 seconds
 setInterval(() => {
     testimonialIndex = (testimonialIndex +1) % testimonialSlides.length;
     showTestimonial(testimonialIndex);
@@ -197,7 +177,7 @@ const prevProduce = document.querySelector('.prev-produce');
 const nextProduce = document.querySelector('.next-produce');
 
 let produceIndex = 0;
-const visibleItems = 3; // items visible in carousel
+const visibleItems = 3;
 
 function updateProduceCarousel() {
     produceItems.forEach((item, idx) => {
@@ -215,4 +195,4 @@ nextProduce.addEventListener('click', () => {
     updateProduceCarousel();
 });
 
-updateProduceCarousel(); // initialize
+updateProduceCarousel();

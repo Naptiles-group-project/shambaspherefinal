@@ -1,0 +1,76 @@
+/* ===============================
+   ORDERS SECTION
+=================================*/
+
+.orders-section{
+    margin-top:40px;
+}
+
+.orders-section h2{
+    color:#2e7d32;
+    margin-bottom:20px;
+}
+
+/* Table wrapper */
+
+.orders-table-wrapper{
+    overflow-x:auto;
+    background:white;
+    border-radius:10px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Table */
+
+.orders-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.orders-table thead{
+    background:#2e7d32;
+    color:white;
+}
+
+.orders-table th,
+.orders-table td{
+    padding:14px;
+    text-align:left;
+    border-bottom:1px solid #eee;
+}
+
+/* Hover effect */
+
+.orders-table tbody tr:hover{
+    background:#f5f5f5;
+}
+
+/* Status styles */
+
+.status{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+/* Pending */
+
+.status.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+/* Accepted */
+
+.status.accepted{
+    background:#d4edda;
+    color:#155724;
+}
+
+/* Delivered */
+
+.status.delivered{
+    background:#cce5ff;
+    color:#004085;
+}

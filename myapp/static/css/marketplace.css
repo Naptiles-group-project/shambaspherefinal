@@ -96,6 +96,7 @@ body {
     box-shadow:0 3px 8px rgba(0,0,0,0.1);
     position:relative;
     transition:0.3s;
+    /* width: 30px; */
 }
 
 .product-card:hover {
