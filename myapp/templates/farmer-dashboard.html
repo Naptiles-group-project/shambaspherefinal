@@ -115,7 +115,7 @@ document.getElementById('add-produce-form').addEventListener('submit', function(
 
     fetch("{% url 'farmer_dashboard' %}", {
         method: "POST",
-        headers: { "X-CSRFToken": csrftoken },
+        headers: { "X-CSRFToken": csrftoken,"X-Requested-With": "XMLHttpRequest" },
         body: data
     })
     .then(res => res.json())
