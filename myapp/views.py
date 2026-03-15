@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from .models import FarmerProfile, Produce, Order
 
 from .models import FarmerProfile, Produce
+from .models import AdvisorProfile
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -203,7 +204,7 @@ def login_view(request):
             auth_login(request, user)
 
             if user.is_superuser:
-                return redirect("/admin/")
+                return redirect("admin_dashboard")
 
             if FarmerProfile.objects.filter(user=user).exists():
                 return redirect("farmer_dashboard")
@@ -629,8 +630,44 @@ def buyer_register(request):
 
 
 def advisor_register(request):
-    return render(request, "advisor-register.html")
+    if request.method == "POST":
+        full_name = request.POST.get("fullName")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone")
+        specialization = request.POST.get("specialization")
+        bio = request.POST.get("bio")
+        password = request.POST.get("password")
 
+        # Check if email already exists
+        if User.objects.filter(email=email).exists():
+            return JsonResponse({"success": False, "error": "Email already registered"})
+
+        # Create user
+        first_name = full_name.split()[0]
+        last_name = " ".join(full_name.split()[1:]) if len(full_name.split()) > 1 else ""
+        user = User.objects.create_user(
+            username=email.split("@")[0],  # simple username
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name
+        )
+
+        # Create advisor profile
+        AdvisorProfile.objects.create(
+            user=user,
+            phone=phone,
+            specialization=specialization,
+            bio=bio,
+            status="Pending"
+        )
+
+        # Optionally auto-login
+        login(request, user)
+
+        return JsonResponse({"success": True, "message": "Registration submitted! Awaiting admin approval."})
+
+    return render(request, "advisor-register.html")
 
 # buyer dashboard view
 from django.contrib.auth.decorators import login_required
@@ -655,3 +692,105 @@ def buyer_dashboard(request):
     }
 
     return render(request, "buyer-dashboard.html", context)
+
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+# List pending advisors
+@staff_member_required
+def pending_advisors(request):
+    advisors = AdvisorProfile.objects.filter(status="Pending").order_by("-created_at")
+    return render(request, "admin/pending-advisors.html", {"advisors": advisors})
+
+# Approve advisor
+@staff_member_required
+def approve_advisor(request, advisor_id):
+    try:
+        advisor = AdvisorProfile.objects.get(id=advisor_id)
+        advisor.status = "Approved"
+        advisor.save()
+        return JsonResponse({"success": True, "status": advisor.status})
+    except AdvisorProfile.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Advisor not found"})
+
+# Reject advisor
+@staff_member_required
+def reject_advisor(request, advisor_id):
+    try:
+        advisor = AdvisorProfile.objects.get(id=advisor_id)
+        advisor.status = "Rejected"
+        advisor.save()
+        return JsonResponse({"success": True, "status": advisor.status})
+    except AdvisorProfile.DoesNotExist:
+        return JsonResponse({"success": False, "error": "Advisor not found"})
+    
+
+
+# pending_advisors
+from django.shortcuts import render
+from .models import AdvisorProfile  # or however you store advisor registrations
+
+def pending_advisors(request):
+    pending = AdvisorProfile.objects.filter(status='Pending')
+    context = {'pending_advisors': pending}
+    return render(request, 'pending_advisors.html', context)
+
+
+
+
+
+# admin-dash view
+from django.contrib.admin.views.decorators import staff_member_required
+
+
+@staff_member_required
+def admin_dashboard(request):
+
+    users = User.objects.all()
+    products = Produce.objects.all()
+    orders = Order.objects.all()
+    advisors = AdvisorProfile.objects.filter(status="Pending")
+
+    context = {
+        "users": users,
+        "products": products,
+        "orders": orders,
+        "advisors": advisors
+    }
+
+    return render(request, "admin-dashboard.html", context)
+
+
+# suspend user
+from django.shortcuts import get_object_or_404
+
+@staff_member_required
+def suspend_user(request, user_id):
+
+    user = get_object_or_404(User, id=user_id)
+
+    user.is_active = False
+    user.save()
+
+    return redirect("admin_dashboard")
+
+
+# approve.reject advisor views
+@staff_member_required
+def approve_advisor(request, advisor_id):
+
+    advisor = AdvisorProfile.objects.get(id=advisor_id)
+    advisor.status = "Approved"
+    advisor.save()
+
+    return redirect("admin_dashboard")
+
+
+@staff_member_required
+def reject_advisor(request, advisor_id):
+
+    advisor = AdvisorProfile.objects.get(id=advisor_id)
+    advisor.status = "Rejected"
+    advisor.save()
+
+    return redirect("admin_dashboard")

@@ -69,3 +69,17 @@ class Order(models.Model):
 
     def __str__(self):
         return f"{self.produce.name} order by {self.buyer_name}"
+
+
+
+# advisor profile
+class AdvisorProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone = models.CharField(max_length=20)
+    specialization = models.CharField(max_length=100)
+    bio = models.TextField()
+    status = models.CharField(max_length=20, default="Pending")  # Pending / Approved
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username

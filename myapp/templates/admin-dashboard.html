@@ -1,49 +1,193 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="admin-dashboard.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard</title>
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+
 </head>
+
 <body>
 
-<header class="admin-header">
-    <h2>⚙️ Admin Dashboard</h2>
-    <button onclick="exportCSV()">Export Users (CSV)</button>
-</header>
+<div class="dashboard">
 
-<!-- NOTIFICATION -->
-<div id="notification" class="notification"></div>
+<!-- ================= SIDEBAR ================= -->
 
-<div class="admin-container">
+<div class="sidebar">
 
-    <!-- USERS -->
-    <section>
-        <h3>👥 User Management</h3>
-        <div id="usersContainer"></div>
-    </section>
+<h2>ShambaSphere</h2>
 
-    <!-- PRODUCTS -->
-    <section>
-        <h3>📦 Product Moderation</h3>
-        <div id="productsContainer"></div>
-    </section>
+<ul>
 
-    <!-- ORDERS -->
-    <section>
-        <h3>🧾 Orders</h3>
-        <div id="ordersContainer"></div>
-    </section>
+<li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
 
-    <!-- ACTIVITY LOG -->
-    <section>
-        <h3>📜 Admin Activity Log</h3>
-        <div id="logContainer"></div>
-    </section>
+<li><a href="#">Users</a></li>
+
+<li><a href="#">Farmers</a></li>
+
+<li><a href="#">Buyers</a></li>
+
+<li><a href="#">Advisors</a></li>
+
+<li><a href="#">Products</a></li>
+
+<li><a href="#">Orders</a></li>
+
+<li><a href="#">Reports</a></li>
+
+<li><a href="{% url 'logout' %}">Logout</a></li>
+
+</ul>
 
 </div>
 
-<script src="admin-dashboard.js"></script>
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="main-content">
+
+<h1>Admin Dashboard</h1>
+
+<!-- USERS -->
+
+<h2>Users</h2>
+
+{% for user in users %}
+
+<div class="card">
+
+<p><b>Username:</b> {{ user.username }}</p>
+<p><b>Email:</b> {{ user.email }}</p>
+
+<p>
+<b>Status:</b>
+
+{% if user.is_active %}
+Active
+{% else %}
+Suspended
+{% endif %}
+
+</p>
+
+<form method="POST" action="{% url 'suspend_user' user.id %}">
+{% csrf_token %}
+<button class="suspend">Suspend User</button>
+</form>
+
+</div>
+
+{% empty %}
+
+<p>No users found</p>
+{% endfor %}
+
+<hr>
+
+<!-- ADVISORS -->
+
+<h2>Pending Advisors</h2>
+
+{% for advisor in advisors %}
+
+<div class="card">
+
+<p><b>Name:</b> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
+<p><b>Email:</b> {{ advisor.user.email }}</p>
+<p><b>Phone:</b> {{ advisor.phone }}</p>
+<p><b>Specialization:</b> {{ advisor.specialization }}</p>
+
+<form method="POST" action="{% url 'approve_advisor' advisor.id %}">
+{% csrf_token %}
+<button class="approve">Approve</button>
+</form>
+
+<form method="POST" action="{% url 'reject_advisor' advisor.id %}">
+{% csrf_token %}
+<button class="reject">Reject</button>
+</form>
+
+</div>
+
+{% empty %}
+
+<p>No pending advisors</p>
+{% endfor %}
+
+<hr>
+
+<!-- PRODUCTS -->
+
+<h2>Products</h2>
+
+<table>
+
+<tr>
+<th>Product</th>
+<th>Farmer</th>
+<th>Price</th>
+<th>Status</th>
+</tr>
+
+{% for product in products %}
+
+<tr>
+<td>{{ product.name }}</td>
+<td>{{ product.farmer.user.username }}</td>
+<td>{{ product.price }}</td>
+<td>{{ product.status }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="4">No products</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<hr>
+
+<!-- ORDERS -->
+
+<h2>Orders</h2>
+
+<table>
+
+<tr>
+<th>Product</th>
+<th>Buyer</th>
+<th>Quantity</th>
+<th>Total Price</th>
+</tr>
+
+{% for order in orders %}
+
+<tr>
+<td>{{ order.produce.name }}</td>
+<td>{{ order.buyer_name }}</td>
+<td>{{ order.quantity }}</td>
+<td>{{ order.total_price }}</td>
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="4">No orders</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
 </body>
 </html>

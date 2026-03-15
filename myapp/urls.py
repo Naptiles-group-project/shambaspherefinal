@@ -2,11 +2,14 @@ from django.urls import path
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
-
+from myapp.admin import admin_site  # import your custom admin
 
 
 urlpatterns = [
+    #  path('myadmin/', admin_site.urls),  # use custom admin instead of default admin/
+   
     path('', views.home, name='home'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('farmer-register/', views.farmer_register, name='farmer_register'),
     path('farmer-dashboard/', views.farmer_dashboard, name='farmer_dashboard'),
     path('buyer-register/', views.buyer_register, name='buyer_register'),
@@ -17,8 +20,14 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('edit-produce/<int:produce_id>/', views.edit_produce, name='edit_produce'),
     path('delete-produce/<int:produce_id>/', views.delete_produce, name='delete_produce'),
-  
     path('advisor-register/', views.advisor_register, name='advisor_register'),
+    path('admin/pending-advisors/', views.pending_advisors, name='pending_advisors'),
+    path('admin/approve-advisor/<int:advisor_id>/', views.approve_advisor, name='approve_advisor'),
+    path('admin/reject-advisor/<int:advisor_id>/', views.reject_advisor, name='reject_advisor'),
+    # path('advisor-dashboard/', views.advisor_dashboard, name='advisor_dashboard'),,
+    path('suspend-user/<int:user_id>/', views.suspend_user, name='suspend_user'),
+  
 
-    # path('advisor-dashboard/', views.advisor_dashboard, name='advisor_dashboard'),
+   
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

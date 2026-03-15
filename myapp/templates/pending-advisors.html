@@ -1,0 +1,69 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h2>Pending Advisors</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Specialization</th>
+            <th>Bio</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for advisor in advisors %}
+        <tr id="advisor-{{ advisor.id }}">
+            <td>{{ advisor.user.get_full_name }}</td>
+            <td>{{ advisor.user.email }}</td>
+            <td>{{ advisor.phone }}</td>
+            <td>{{ advisor.specialization }}</td>
+            <td>{{ advisor.bio }}</td>
+            <td>
+                <button class="approve-btn" data-id="{{ advisor.id }}">Approve</button>
+                <button class="reject-btn" data-id="{{ advisor.id }}">Reject</button>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">No pending advisors.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+const csrftoken = getCookie('csrftoken'); // same function as before
+
+document.querySelectorAll('.approve-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        fetch(`/admin/approve-advisor/${id}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken }
+        }).then(res => res.json())
+        .then(json => {
+            if(json.success){
+                document.getElementById(`advisor-${id}`).remove();
+                alert("Advisor approved!");
+            } else alert(json.error);
+        });
+    });
+});
+
+document.querySelectorAll('.reject-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        fetch(`/admin/reject-advisor/${id}/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken }
+        }).then(res => res.json())
+        .then(json => {
+            if(json.success){
+                document.getElementById(`advisor-${id}`).remove();
+                alert("Advisor rejected!");
+            } else alert(json.error);
+        });
+    });
+});
+</script>
+{% endblock %}

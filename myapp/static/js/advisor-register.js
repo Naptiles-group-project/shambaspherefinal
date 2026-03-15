@@ -1,21 +1,31 @@
 document.getElementById("advisorForm").addEventListener("submit", function(e){
-
     e.preventDefault();
 
-    let advisors = JSON.parse(localStorage.getItem("advisors")) || [];
+    const form = e.target;
+    const data = new FormData(form);
 
-    const newAdvisor = {
-        id: Date.now(),
-        fullName: document.getElementById("fullName").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        specialization: document.getElementById("specialization").value,
-        bio: document.getElementById("bio").value,
-        password: document.getElementById("password").value,
-        role: "Advisor",
-        status: "Pending", // Must be approved by Admin
-        date: new Date().toLocaleString()
-    };
+    fetch("{% url 'advisor_register' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": getCookie('csrftoken'),
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: data
+    })
+    .then(res => res.json())
+    .then(json => {
+        const msg = document.getElementById("message");
+        if(json.success){
+            msg.innerText = json.message;
+            msg.style.color = "green";
+            form.reset();
+        } else {
+            msg.innerText = json.error;
+            msg.style.color = "red";
+        }
+    })
+    .catch(err => console.error(err));
+});
 
     // Check if email already exists
     const exists = advisors.some(a => a.email === newAdvisor.email);
