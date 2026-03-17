@@ -3,7 +3,7 @@
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from requests import request
+# from requests import request
 from .models import FarmerProfile
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -212,8 +212,8 @@ def login_view(request):
                  return redirect("buyer_dashboard")
 
             # Add other roles like AdvisorProfile 
-            # if AdvisorProfile.objects.filter(user=user).exists():
-            #     return redirect("advisor_dashboard")
+            if AdvisorProfile.objects.filter(user=user).exists():
+                return redirect("advisor_dashboard")
 
             # Default: Buyer
             return redirect("marketplace")
@@ -794,3 +794,15 @@ def reject_advisor(request, advisor_id):
     advisor.save()
 
     return redirect("admin_dashboard")
+
+   #advisor register view
+@login_required
+def advisor_dashboard(request):
+
+    advisor = AdvisorProfile.objects.get(user=request.user)
+
+    context = {
+        "advisor": advisor
+    }
+
+    return render(request, "advisor-dashboard.html", context)

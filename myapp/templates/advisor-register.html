@@ -14,7 +14,9 @@
     <h2>🧠 Advisor Registration</h2>
     <p>Join as an Agricultural Advisor</p>
 
-    <form id="advisorForm">
+    <form id="advisorForm" method="POST">
+    {% csrf_token %}
+
 
         <input type="text" id="fullName" name="fullName" placeholder="Full Name" required>
 

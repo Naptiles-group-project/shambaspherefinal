@@ -19,15 +19,17 @@
     </div>
 </div>
 
-    <form id="adminForm">
+    <form id="advisorForm" method="POST">
+    {% csrf_token %}
+
     
 
         <!-- Personal Info -->
         <section>
             <h2>Personal Information</h2>
             <div class="grid">
-                <input type="text" placeholder="First Name" required>
-                <input type="text" placeholder="Last Name" required>
+                <input type="text"  placeholder="First Name" required>
+                <input type="text"  placeholder="Last Name" required>
                 <input type="text" placeholder="Username" required>
                 <input type="email" id="email" placeholder="Official Email" required>
                 <input type="tel" placeholder="Phone Number" required>

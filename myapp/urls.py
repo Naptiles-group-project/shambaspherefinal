@@ -21,10 +21,10 @@ urlpatterns = [
     path('edit-produce/<int:produce_id>/', views.edit_produce, name='edit_produce'),
     path('delete-produce/<int:produce_id>/', views.delete_produce, name='delete_produce'),
     path('advisor-register/', views.advisor_register, name='advisor_register'),
-    path('admin/pending-advisors/', views.pending_advisors, name='pending_advisors'),
-    path('admin/approve-advisor/<int:advisor_id>/', views.approve_advisor, name='approve_advisor'),
-    path('admin/reject-advisor/<int:advisor_id>/', views.reject_advisor, name='reject_advisor'),
-    # path('advisor-dashboard/', views.advisor_dashboard, name='advisor_dashboard'),,
+    path('dashboard/pending-advisors/', views.pending_advisors, name='pending_advisors'),
+    path('dashboard/approve-advisor/<int:advisor_id>/', views.approve_advisor, name='approve_advisor'),
+    path('dashboard/reject-advisor/<int:advisor_id>/', views.reject_advisor, name='reject_advisor'),
+    path('advisor-dashboard/', views.advisor_dashboard, name='advisor_dashboard'),
     path('suspend-user/<int:user_id>/', views.suspend_user, name='suspend_user'),
   
 
