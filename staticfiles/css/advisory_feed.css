@@ -1,0 +1,81 @@
+/* --- General Styles --- */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 30px;
+    color: #2d6cdf;
+}
+
+/* --- Container for all posts --- */
+.feed-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+/* --- Each post card --- */
+.post-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.post-card h3 {
+    margin-top: 0;
+    color: #1a1a1a;
+}
+
+.post-card p {
+    line-height: 1.6;
+    color: #333;
+}
+
+.post-card small {
+    display: block;
+    margin-top: 15px;
+    color: #888;
+}
+
+/* --- Image Styling --- */
+.post-image {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+/* --- Category Styling --- */
+.category {
+    font-weight: bold;
+    color: #2d6cdf;
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 600px) {
+    .post-card {
+        padding: 15px;
+    }
+}
+
+/* --- Empty feed message --- */
+.empty-feed {
+    text-align: center;
+    font-style: italic;
+    color: #555;
+    margin-top: 40px;
+}
