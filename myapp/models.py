@@ -83,3 +83,35 @@ class AdvisorProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    #advisorpost model
+class AdvisorPost(models.Model):
+    advisor = models.ForeignKey(AdvisorProfile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    category = models.CharField(max_length=100)
+    content = models.TextField()
+    image = models.ImageField(upload_to='advisor_posts/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+   
+   #for advisor-page
+class AdvisorPost(models.Model):
+    advisor = models.ForeignKey(AdvisorProfile, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    category = models.CharField(max_length=100)
+    content = models.TextField()
+    image = models.ImageField(upload_to='advisor_posts/', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=[("Pending", "Pending"), ("Approved", "Approved"), ("Rejected", "Rejected")],
+        default="Pending"
+    )
+
+    def __str__(self):
+        return self.title
+
+  

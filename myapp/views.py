@@ -1,4 +1,5 @@
-
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
+from django.views.decorators.csrf import ensure_csrf_cookie
 # Create your views here.
 
 from django.shortcuts import render, redirect
@@ -18,6 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from .models import FarmerProfile, Produce
 from decimal import Decimal
+from .models import AdvisorPost
 
 
 
@@ -208,12 +210,14 @@ def login_view(request):
 
             if FarmerProfile.objects.filter(user=user).exists():
                 return redirect("farmer_dashboard")
-            else:
-                 return redirect("buyer_dashboard")
-
+            
             # Add other roles like AdvisorProfile 
             if AdvisorProfile.objects.filter(user=user).exists():
                 return redirect("advisor_dashboard")
+
+            return redirect("buyer_dashboard")
+
+            
 
             # Default: Buyer
             return redirect("marketplace")
@@ -629,24 +633,37 @@ def buyer_register(request):
 
 
 
+from django.contrib.auth.models import User
+from django.contrib.auth import login
+from django.http import JsonResponse
+from .models import AdvisorProfile
+from django.shortcuts import render
+
 def advisor_register(request):
     if request.method == "POST":
         full_name = request.POST.get("fullName")
+        username = request.POST.get("username")
         email = request.POST.get("email")
         phone = request.POST.get("phone")
         specialization = request.POST.get("specialization")
         bio = request.POST.get("bio")
         password = request.POST.get("password")
 
-        # Check if email already exists
+        if not username:
+            return JsonResponse({"success": False, "error": "Username must be provided"})
+
+        if User.objects.filter(username=username).exists():
+            return JsonResponse({"success": False, "error": "Username already exists"})
+
         if User.objects.filter(email=email).exists():
             return JsonResponse({"success": False, "error": "Email already registered"})
 
+        first_name = full_name.split()[0] if full_name else ""
+        last_name = " ".join(full_name.split()[1:]) if full_name and len(full_name.split()) > 1 else ""
+
         # Create user
-        first_name = full_name.split()[0]
-        last_name = " ".join(full_name.split()[1:]) if len(full_name.split()) > 1 else ""
         user = User.objects.create_user(
-            username=email.split("@")[0],  # simple username
+            username=username,
             email=email,
             password=password,
             first_name=first_name,
@@ -662,10 +679,12 @@ def advisor_register(request):
             status="Pending"
         )
 
-        # Optionally auto-login
         login(request, user)
 
-        return JsonResponse({"success": True, "message": "Registration submitted! Awaiting admin approval."})
+        return JsonResponse({
+            "success": True,
+            "message": "Registration submitted! Awaiting admin approval."
+        })
 
     return render(request, "advisor-register.html")
 
@@ -750,12 +769,15 @@ def admin_dashboard(request):
     products = Produce.objects.all()
     orders = Order.objects.all()
     advisors = AdvisorProfile.objects.filter(status="Pending")
+    pending_posts = AdvisorPost.objects.filter(status="Pending").order_by("-created_at")  # <-- new
+
 
     context = {
         "users": users,
         "products": products,
         "orders": orders,
-        "advisors": advisors
+        "advisors": advisors,
+        "pending_posts": pending_posts
     }
 
     return render(request, "admin-dashboard.html", context)
@@ -806,3 +828,162 @@ def advisor_dashboard(request):
     }
 
     return render(request, "advisor-dashboard.html", context)
+
+#advisor posts view
+@login_required
+@csrf_protect
+def create_advisor_post(request):
+    if request.method == "POST":
+        advisor = AdvisorProfile.objects.filter(user=request.user).first()
+
+        if not advisor:
+            return JsonResponse({"success": False, "error": "Not an advisor"})
+
+        title = request.POST.get("title")
+        category = request.POST.get("category")
+        content = request.POST.get("content")
+        image = request.FILES.get("image")
+
+        post = AdvisorPost.objects.create(
+            advisor=advisor,
+            title=title,
+            category=category,
+            content=content,
+            image=image,
+            status="Pending", 
+        )
+
+        return JsonResponse({
+            "success": True,
+            "post": {
+                "id": post.id,
+                "title": post.title,
+                "category": post.category,
+                "content": post.content
+            }
+        })
+
+    return JsonResponse({"success": False})
+
+#advisor-dashboard view
+from .models import AdvisorPost
+
+@login_required
+@ensure_csrf_cookie
+def advisor_dashboard(request):
+    try:
+        advisor = AdvisorProfile.objects.get(user=request.user)
+    except AdvisorProfile.DoesNotExist:
+        return redirect("login")
+
+    if advisor.status != "Approved":
+        return render(request, "advisor_pending.html", {"advisor": advisor})
+    
+
+    #added this part
+    #if request.method == "POST":
+        #title = request.POST.get("title")
+        #category = request.POST.get("category")
+        #content = request.POST.get("content")
+        #image = request.FILES.get("image")
+         # Simple validation
+        #if not all([title, category, content]):
+           # messages.error(request, "Title, category, and content are required.")
+        #else:
+
+            #AdvisorPost.objects.create(
+            #advisor=advisor,
+            #title=title,
+            #category=category,
+            #content=content,
+            #image=image,
+            #status="Pending"
+    #)
+
+    posts = AdvisorPost.objects.filter(advisor=advisor).order_by("-created_at")
+
+    return render(request, "advisor-dashboard.html", {
+        "advisor": advisor,
+        "posts": posts
+    })
+     
+     
+     #advisor login view
+    if AdvisorProfile.objects.filter(user=user).exists():
+        advisor = AdvisorProfile.objects.get(user=user)
+    if advisor.status == "Approved":
+        return redirect("advisor_dashboard")
+    else:
+        messages.info(request, "Your account is pending approval by admin.")
+        return redirect("login")
+    
+    
+    #advisory page view
+@login_required
+def advisory_feed(request):
+        posts = AdvisorPost.objects.filter(status="Approved").order_by("-created_at")
+
+        return render(request, "advisory-feed.html", {
+        "posts": posts
+    })
+
+
+    #admin advisory post approval view
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def pending_posts(request):
+    # Redirect to admin dashboard where pending posts section already exists
+    return redirect("admin_dashboard")
+
+    #approve advisory post view
+@staff_member_required
+def approve_post(request, post_id):
+    post = AdvisorPost.objects.get(id=post_id)
+    post.status = "Approved"
+    post.save()
+    return redirect("admin_dashboard")  # redirect to dashboard
+    
+    
+    #reject advisory post view
+@staff_member_required
+def reject_post(request, post_id):
+    post = AdvisorPost.objects.get(id=post_id)
+    post.status = "Rejected"
+    post.save()
+    return redirect("admin_dashboard")  # redirect to dashboard
+
+
+#create_advisor_post
+@login_required
+@csrf_protect
+def create_advisor_post(request):
+    if request.method == "POST":
+        advisor = AdvisorProfile.objects.filter(user=request.user).first()
+
+        if not advisor:
+            return JsonResponse({"success": False, "error": "Not an advisor"})
+
+        title = request.POST.get("title")
+        category = request.POST.get("category")
+        content = request.POST.get("content")
+        image = request.FILES.get("image")
+
+        if not all([title, category, content]):
+            return JsonResponse({"success": False, "error": "All fields required"})
+
+        post = AdvisorPost.objects.create(
+            advisor=advisor,
+            title=title,
+            category=category,
+            content=content,
+            image=image,
+            status="Pending",
+        )
+
+       # return JsonResponse({"success": True})
+        return redirect("advisor_dashboard")
+
+    return JsonResponse({"success": False})
+
+ 

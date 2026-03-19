@@ -1,48 +1,66 @@
-// document.getElementById("advisorForm").addEventListener("submit", function(e){
-//     e.preventDefault();
+// advisor-register.js
 
-//     const form = e.target;
-//     const data = new FormData(form);
+// =========================
+// GET CSRF TOKEN
+// =========================
+function getCSRFToken() {
+    const cookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken'));
+    return cookie ? cookie.split('=')[1] : '';
+}
 
-//     fetch("{% url 'advisor_register' %}", {
-//         method: "POST",
-//         headers: {
-//             "X-CSRFToken": getCookie('csrftoken'),
-//             "X-Requested-With": "XMLHttpRequest"
-//         },
-//         body: data
-//     })
-//     .then(res => res.json())
-//     .then(json => {
-//         const msg = document.getElementById("message");
-//         if(json.success){
-//             msg.innerText = json.message;
-//             msg.style.color = "green";
-//             form.reset();
-//         } else {
-//             msg.innerText = json.error;
-//             msg.style.color = "red";
-//         }
-//     })
-//     .catch(err => console.error(err));
-// });
+// =========================
+// DOM READY
+// =========================
+document.addEventListener("DOMContentLoaded", () => {
 
-    // Check if email already exists
-    // const exists = advisors.some(a => a.email === newAdvisor.email);
+    const form = document.getElementById("advisorForm");
+    const messageEl = document.getElementById("message");
 
-    // if(exists){
-    //     document.getElementById("message").innerText = "Email already registered!";
-    //     document.getElementById("message").style.color = "red";
-    //     return;
-    // }
+    if (!form) {
+        console.error("Advisor form not found!");
+        return;
+    }
 
-    // advisors.push(newAdvisor);
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
 
-    // localStorage.setItem("advisors", JSON.stringify(advisors));
+        const formData = new FormData(form);
 
-    // document.getElementById("message").innerText = 
-    //     "Registration submitted! Awaiting admin approval.";
-    // document.getElementById("message").style.color = "green";
+        // 🔹 Debug: log all FormData entries
+        console.log("FormData entries:");
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
-    // this.reset();
-// });
+        // Simple front-end validation
+        if (!formData.get("username") || !formData.get("fullName") || !formData.get("email") || !formData.get("password")) {
+            messageEl.innerText = "Please fill in all required fields!";
+            messageEl.style.color = "red";
+            return;
+        }
+
+        fetch("/advisor-register/", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(res => res.json())
+        .then(json => {
+            console.log("Server response:", json);
+            messageEl.innerText = json.success ? json.message : (json.error || "Registration failed!");
+            messageEl.style.color = json.success ? "green" : "red";
+            if(json.success) form.reset();
+        })
+        .catch(err => {
+            console.error(err);
+            messageEl.innerText = "An unexpected error occurred!";
+            messageEl.style.color = "red";
+        });
+    });
+
+});

@@ -135,3 +135,6 @@ button:hover {
     background: #1e1e1e;
     color: white;
 }
+
+<link rel="stylesheet" href="{% static 'myapp/advisor-dashboard.css' %}">
+<script src="{% static 'myapp/advisor-dashboard.js' %}"></script>

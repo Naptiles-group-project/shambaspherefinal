@@ -26,6 +26,12 @@ urlpatterns = [
     path('dashboard/reject-advisor/<int:advisor_id>/', views.reject_advisor, name='reject_advisor'),
     path('advisor-dashboard/', views.advisor_dashboard, name='advisor_dashboard'),
     path('suspend-user/<int:user_id>/', views.suspend_user, name='suspend_user'),
+    path('create-advisor-post/', views.create_advisor_post, name='create_advisor_post'),
+    path('advisory/', views.advisory_feed, name='advisory_feed'),
+    path('dashboard/pending-posts/', views.pending_posts, name='pending_posts'),
+    path('dashboard/approve-post/<int:post_id>/', views.approve_post, name='approve_post'),
+    path('dashboard/reject-post/<int:post_id>/', views.reject_post, name='reject_post'),
+
   
 
    

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+{% load static %}
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Advisor Dashboard - ShambaSphere</title>
-<link rel="stylesheet" href="advisor-dashboard.css">
+<link rel="stylesheet" href="{% static 'css/advisor-dashboard.css' %}">
 </head>
 <body>
 
@@ -20,8 +21,9 @@
     <div class="profile-wrapper" id="profileWrapper">
         <img id="advisorImage" src="https://via.placeholder.com/80">
         <div>
-            <h3 id="advisorName">Advisor Name</h3>
-            <p id="advisorSpecialization">Specialization</p>
+           <h3>{{ advisor.user.first_name }} {{ advisor.user.last_name }}</h3>
+           <p>{{ advisor.specialization }}</p>
+
         </div>
 
         <!-- Dropdown Menu -->
@@ -48,10 +50,10 @@
     <!-- Create Advisory Post -->
     <section class="create-post">
         <h2>Create Advisory Post</h2>
-        <form id="postForm">
-            <input type="text" id="postTitle" placeholder="Post Title" required>
-
-            <select id="category" required>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'create_advisor_post' %}">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="Post Title" required>
+            <select name="category" required>
                 <option value="">Select Category</option>
                 <option>Crop Management</option>
                 <option>Livestock</option>
@@ -60,12 +62,12 @@
                 <option>Policy Update</option>
             </select>
 
-            <input type="text" id="targetCrop" placeholder="Target Crop (Optional)">
-            <input type="text" id="targetCounty" placeholder="Target County (Optional)">
+            <input type="text" name="targetCrop" placeholder="Target Crop (Optional)">
+            <input type="text" name="targetCounty" placeholder="Target County (Optional)">
 
-            <textarea id="postContent" placeholder="Write advisory content..." rows="4" required></textarea>
+            <textarea name="content" placeholder="Write advisory content..." rows="4" required></textarea>
 
-            <input type="file" id="postImage" accept="image/*">
+            <input type="file" name="image" accept="image/*">
 
             <button type="submit">Publish Post</button>
         </form>
@@ -74,11 +76,28 @@
     <!-- My Posts -->
     <section>
         <h2>My Advisory Posts</h2>
-        <div id="postsContainer"></div>
+        <div>
+{% for post in posts %}
+    <div class="post-card">
+        <h3>{{ post.title }}</h3>
+        <p><strong>Category:</strong> {{ post.category }}</p>
+        <p>{{ post.content }}</p>
+        <p><strong>Status:</strong> {{ post.status }}</p>
+
+        {% if post.image %}
+            <img src="{{ post.image.url }}">
+        {% endif %}
+
+        <small>{{ post.created_at }}</small>
+    </div>
+{% empty %}
+    <p>No posts yet</p>
+{% endfor %}
+</div>
     </section>
 
 </div>
 
-<script src="advisor-dashboard.js"></script>
+<!--<script src="advisor-dashboard.js"></script>
 </body>
 </html>

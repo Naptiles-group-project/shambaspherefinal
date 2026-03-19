@@ -1,193 +1,166 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-
-<title>Admin Dashboard</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - ShambaSphere</title>
 {% load static %}
-
 <link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
-
 </head>
-
 <body>
 
 <div class="dashboard">
 
-<!-- ================= SIDEBAR ================= -->
+    <!-- ================= SIDEBAR ================= -->
+    <div class="sidebar">
+        <h2>ShambaSphere</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li><a href="#">Users</a></li>
+            <li><a href="#">Farmers</a></li>
+            <li><a href="#">Buyers</a></li>
+            <li><a href="#">Advisors</a></li>
+            <li><a href="#">Products</a></li>
+            <li><a href="#">Orders</a></li>
+            <li><a href="#">Reports</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
 
-<div class="sidebar">
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="main-content">
+        <h1>Admin Dashboard</h1>
 
-<h2>ShambaSphere</h2>
+        <!-- ================= USERS ================= -->
+        <section>
+            <h2>Users</h2>
+            {% for user in users %}
+            <div class="card">
+                <p><b>Username:</b> {{ user.username }}</p>
+                <p><b>Email:</b> {{ user.email }}</p>
+                <p><b>Status:</b> {% if user.is_active %}Active{% else %}Suspended{% endif %}</p>
 
-<ul>
+                <form method="POST" action="{% url 'suspend_user' user.id %}">
+                    {% csrf_token %}
+                    <button class="suspend">Suspend User</button>
+                </form>
+            </div>
+            {% empty %}
+            <p>No users found</p>
+            {% endfor %}
+        </section>
 
-<li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+        <hr>
 
-<li><a href="#">Users</a></li>
+        <!-- ================= PENDING ADVISORS ================= -->
+        <section>
+            <h2>Pending Advisors</h2>
+            {% for advisor in advisors %}
+            <div class="card">
+                <p><b>Name:</b> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
+                <p><b>Email:</b> {{ advisor.user.email }}</p>
+                <p><b>Phone:</b> {{ advisor.phone }}</p>
+                <p><b>Specialization:</b> {{ advisor.specialization }}</p>
 
-<li><a href="#">Farmers</a></li>
+                <form method="POST" action="{% url 'approve_advisor' advisor.id %}">
+                    {% csrf_token %}
+                    <button class="approve">Approve</button>
+                </form>
 
-<li><a href="#">Buyers</a></li>
+                <form method="POST" action="{% url 'reject_advisor' advisor.id %}">
+                    {% csrf_token %}
+                    <button class="reject">Reject</button>
+                </form>
+            </div>
+            {% empty %}
+            <p>No pending advisors</p>
+            {% endfor %}
+        </section>
 
-<li><a href="#">Advisors</a></li>
+        <hr>
 
-<li><a href="#">Products</a></li>
+        <!-- ================= PENDING ADVISOR POSTS ================= -->
+        <section>
+            <h2>Pending Advisor Posts</h2>
+            {% for post in pending_posts %}
+            <div class="post-card">
+                <h3>{{ post.title }}</h3>
+                <p><strong>Category:</strong> {{ post.category }}</p>
+                <p>{{ post.content }}</p>
+                <p><strong>Advisor:</strong> {{ post.advisor.user.username }}</p>
+                <p><strong>Created At:</strong> {{ post.created_at }}</p>
 
-<li><a href="#">Orders</a></li>
-
-<li><a href="#">Reports</a></li>
-
-<li><a href="{% url 'logout' %}">Logout</a></li>
-
-</ul>
-
-</div>
-
-<!-- ================= MAIN CONTENT ================= -->
-
-<div class="main-content">
-
-<h1>Admin Dashboard</h1>
-
-<!-- USERS -->
-
-<h2>Users</h2>
-
-{% for user in users %}
-
-<div class="card">
-
-<p><b>Username:</b> {{ user.username }}</p>
-<p><b>Email:</b> {{ user.email }}</p>
-
-<p>
-<b>Status:</b>
-
-{% if user.is_active %}
-Active
-{% else %}
-Suspended
-{% endif %}
-
-</p>
-
-<form method="POST" action="{% url 'suspend_user' user.id %}">
-{% csrf_token %}
-<button class="suspend">Suspend User</button>
+                <form method="POST" action="{% url 'approve_post' post.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button class="approve">Approve</button>
 </form>
 
-</div>
-
-{% empty %}
-
-<p>No users found</p>
-{% endfor %}
-
-<hr>
-
-<!-- ADVISORS -->
-
-<h2>Pending Advisors</h2>
-
-{% for advisor in advisors %}
-
-<div class="card">
-
-<p><b>Name:</b> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
-<p><b>Email:</b> {{ advisor.user.email }}</p>
-<p><b>Phone:</b> {{ advisor.phone }}</p>
-<p><b>Specialization:</b> {{ advisor.specialization }}</p>
-
-<form method="POST" action="{% url 'approve_advisor' advisor.id %}">
-{% csrf_token %}
-<button class="approve">Approve</button>
+<form method="POST" action="{% url 'reject_post' post.id %}" style="display:inline;">
+    {% csrf_token %}
+    <button class="reject">Reject</button>
 </form>
+            </div>
+            {% empty %}
+            <p>No pending posts</p>
+            {% endfor %}
+        </section>
 
-<form method="POST" action="{% url 'reject_advisor' advisor.id %}">
-{% csrf_token %}
-<button class="reject">Reject</button>
-</form>
+        <hr>
 
-</div>
+        <!-- ================= PRODUCTS ================= -->
+        <section>
+            <h2>Products</h2>
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Farmer</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.farmer.user.username }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No products</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
 
-{% empty %}
+        <hr>
 
-<p>No pending advisors</p>
-{% endfor %}
+        <!-- ================= ORDERS ================= -->
+        <section>
+            <h2>Orders</h2>
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Buyer</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.produce.name }}</td>
+                    <td>{{ order.buyer_name }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.total_price }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No orders</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </section>
 
-<hr>
-
-<!-- PRODUCTS -->
-
-<h2>Products</h2>
-
-<table>
-
-<tr>
-<th>Product</th>
-<th>Farmer</th>
-<th>Price</th>
-<th>Status</th>
-</tr>
-
-{% for product in products %}
-
-<tr>
-<td>{{ product.name }}</td>
-<td>{{ product.farmer.user.username }}</td>
-<td>{{ product.price }}</td>
-<td>{{ product.status }}</td>
-</tr>
-
-{% empty %}
-
-<tr>
-<td colspan="4">No products</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-<hr>
-
-<!-- ORDERS -->
-
-<h2>Orders</h2>
-
-<table>
-
-<tr>
-<th>Product</th>
-<th>Buyer</th>
-<th>Quantity</th>
-<th>Total Price</th>
-</tr>
-
-{% for order in orders %}
-
-<tr>
-<td>{{ order.produce.name }}</td>
-<td>{{ order.buyer_name }}</td>
-<td>{{ order.quantity }}</td>
-<td>{{ order.total_price }}</td>
-</tr>
-
-{% empty %}
-
-<tr>
-<td colspan="4">No orders</td>
-</tr>
-
-{% endfor %}
-
-</table>
-
-</div>
-
-</div>
+    </div> <!-- main-content -->
+</div> <!-- dashboard -->
 
 </body>
 </html>

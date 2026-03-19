@@ -1,4 +1,12 @@
-let posts = JSON.parse(localStorage.getItem("advisorPosts")) || [];
+/*crsf function
+function getCSRFToken() {
+    return document.cookie.split('; ')
+        .find(row => row.startsWith('csrftoken'))
+        .split('=')[1];
+}
+
+
+
 
 const form = document.getElementById("postForm");
 const postsContainer = document.getElementById("postsContainer");
@@ -43,7 +51,8 @@ window.addEventListener("DOMContentLoaded", () => {
 ========================= */
 function logout() {
     alert("Logged out successfully!");
-    window.location.href = "login.html"; // adjust if needed
+    window.location.href = "/logout/";
+ // adjust if needed
 }
 
 /* =========================
@@ -67,26 +76,35 @@ function openEditProfile() {
 /* =========================
    CREATE POST
 ========================= */
-form.addEventListener("submit", function(e) {
+/*form.addEventListener("submit", function(e) {
     e.preventDefault();
 
-    const title = document.getElementById("postTitle").value;
-    const category = document.getElementById("category").value;
-    const content = document.getElementById("postContent").value;
+    const formData = new FormData();
+    formData.append("title", document.getElementById("postTitle").value);
+    formData.append("category", document.getElementById("category").value);
+    formData.append("content", document.getElementById("postContent").value);
+       
+    const imageFile = document.getElementById("postImage").files[0];
+    if (imageFile) {
+    formData.append("image", imageFile);
+}
 
-    const newPost = {
-        id: Date.now(),
-        title,
-        category,
-        content
-    };
-
-    posts.push(newPost);
-    localStorage.setItem("advisorPosts", JSON.stringify(posts));
-
-    form.reset();
-    renderPosts();
+    fetch("/create-advisor-post/", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-CSRFToken": getCSRFToken()
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("Post created!");
+            form.reset();
+        }
+    });
 });
+
 
 /* =========================
    RENDER POSTS
@@ -111,10 +129,15 @@ function renderPosts() {
     document.getElementById("totalPosts").innerText = posts.length;
 }
 
-function deletePost(id) {
+/*function deletePost(id) {
     posts = posts.filter(p => p.id !== id);
-    localStorage.setItem("advisorPosts", JSON.stringify(posts));
-    renderPosts();
+    /*localStorage.setItem("advisorPosts", JSON.stringify(posts));
+    /*renderPosts();
 }
 
 renderPosts();
+
+<link rel="stylesheet" href="{% static 'myapp/advisor-dashboard.css' %}">
+<script src="{% static 'myapp/advisor-dashboard.js' %}"></script>
+
+
