@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cashout - ShambaSphere</title>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/cashout.css' %}">
+</head>
+<body>
+
+<div class="cashout-container">
+
+    <h2>💳 Checkout</h2>
+
+    <div class="order-summary">
+        <p><strong>Product:</strong> {{ order.produce.name }}</p>
+        <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+        <p><strong>Total Price:</strong> KES {{ order.total_price }}</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <h3>Select Payment Method</h3>
+
+        <label>
+            <input type="radio" name="payment_method" value="mpesa" required>
+            M-Pesa
+        </label><br>
+
+        <label>
+            <input type="radio" name="payment_method" value="card">
+            Card Payment
+        </label><br><br>
+
+        <button type="submit">Confirm Payment</button>
+    </form>
+
+</div>
+
+</body>
+</html>

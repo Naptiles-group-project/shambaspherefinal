@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Orders - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/admin-orders.css' %}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <div class="sidebar">
+        <h2>ShambaSphere</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'admin_orders' %}" class="active-link">Orders</a></li>
+            <li><a href="{% url 'admin_withdrawals' %}">Withdrawals</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Orders Management</h1>
+
+        <section>
+            <h2>All Orders</h2>
+
+            {% for order in orders %}
+            <div class="card">
+                <p><strong>Order ID:</strong> {{ order.id }}</p>
+                <p><strong>Buyer:</strong> {{ order.buyer.username }}</p>
+                <p><strong>Phone:</strong> {{ order.phone }}</p>
+                <p><strong>Location:</strong> {{ order.location }}</p>
+                <p><strong>Delivery Fee:</strong> KSh {{ order.delivery_fee }}</p>
+                <p><strong>Total Amount:</strong> KSh {{ order.total_amount }}</p>
+                <p><strong>Payment Status:</strong> {{ order.payment_status }}</p>
+                <p><strong>Date:</strong> {{ order.created_at }}</p>
+
+                <div class="action-buttons">
+                    {% if order.payment_status == "Pending" %}
+                    <form method="POST" action="{% url 'confirm_payment' order.id %}">
+                        {% csrf_token %}
+                        <button class="approve" type="submit">Confirm Payment</button>
+                    </form>
+                    {% endif %}
+
+                    {% if order.payment_status == "Paid" %}
+                    <form method="POST" action="{% url 'start_delivery' order.id %}">
+                        {% csrf_token %}
+                        <button class="delivery" type="submit">Start Delivery</button>
+                    </form>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'update_delivery_fee' order.id %}">
+    {% csrf_token %}
+    <label><strong>Set Delivery Fee:</strong></label>
+    <input type="number" step="0.01" name="delivery_fee" value="{{ order.delivery_fee }}" required>
+    <button type="submit" class="delivery">Update Fee</button>
+</form>
+                </div>
+
+                <div class="order-items">
+                    <h3>Order Items</h3>
+
+                    {% for item in order.items.all %}
+                    <div class="item-card">
+                        <p><strong>Product:</strong> {{ item.produce.name }}</p>
+                        <p><strong>Farmer:</strong> {{ item.farmer.user.username }}</p>
+                        <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+                        <p><strong>Item Total:</strong> KSh {{ item.price }}</p>
+                        <p><strong>Status:</strong> {{ item.status }}</p>
+                    </div>
+                    {% empty %}
+                    <p>No items in this order.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p>No orders found.</p>
+            {% endfor %}
+        </section>
+    </div>
+
+</div>
+
+</body>
+</html>

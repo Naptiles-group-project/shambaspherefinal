@@ -16,9 +16,7 @@
     <input type="text" id="searchInput" placeholder="Search products...">
 
     <div class="nav-actions">
-        <div class="cart-icon" onclick="toggleCart()">
-            🛒 <span id="cartCount">0</span>
-        </div>
+       <a href="{% url 'cart_view' %}">🛒 Cart ({{ cart_count }})</a>
     </div>
 </header>
 
@@ -59,8 +57,14 @@
             <p>Quantity: {{ produce.quantity }} kg</p>
 
             <p>Farmer: {{ produce.farmer.user.username }}</p>
+            
+            
+            <form method="POST" action="{% url 'add_to_cart' produce.id %}">
+            {% csrf_token %}
+            <button type="submit">Add to Cart</button> 
+            </form> 
 
-            <button onclick="addToCart('{{ produce.name }}', '{{ produce.price }}')">
+            <!--<button onclick="addToCart('{{ produce.name }}', '{{ produce.price }}')">
                 Add to Cart
             </button>
 
@@ -110,7 +114,7 @@
 
 <!-- ================= CART SIDEBAR ================= -->
 <!-- ================= CART MODAL ================= -->
-<div class="cart-modal" id="cartModal">
+<!--<div class="cart-modal" id="cartModal">
     <div class="cart-card">
         <span class="close-cart" onclick="toggleCart()">×</span>
         <h3>Your Cart</h3>
@@ -126,6 +130,6 @@
     </div>
 </div>
 
-<script src="{% static 'js/marketplace.js' %}"></script>
+<!-- <script src="{% static 'js/marketplace.js' %}"></script> -->
 </body>
 </html>

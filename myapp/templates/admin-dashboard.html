@@ -1,132 +1,127 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - ShambaSphere</title>
-{% load static %}
-<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
 </head>
 <body>
 
 <div class="dashboard">
 
-    <!-- ================= SIDEBAR ================= -->
     <div class="sidebar">
         <h2>ShambaSphere</h2>
         <ul>
             <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
-            <li><a href="#">Users</a></li>
-            <li><a href="#">Farmers</a></li>
-            <li><a href="#">Buyers</a></li>
-            <li><a href="#">Advisors</a></li>
-            <li><a href="#">Products</a></li>
-            <li><a href="#">Orders</a></li>
-            <li><a href="#">Reports</a></li>
+            <li><a href="#users">Users</a></li>
+            <li><a href="#advisors">Pending Advisors</a></li>
+            <li><a href="#posts">Pending Advisor Posts</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="{% url 'admin_orders' %}">Orders</a></li>
+            <li><a href="{% url 'admin_withdrawals' %}">Withdrawals</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
         </ul>
     </div>
 
-    <!-- ================= MAIN CONTENT ================= -->
     <div class="main-content">
         <h1>Admin Dashboard</h1>
 
-        <!-- ================= USERS ================= -->
-        <section>
+        <section id="users">
             <h2>Users</h2>
             {% for user in users %}
             <div class="card">
-                <p><b>Username:</b> {{ user.username }}</p>
-                <p><b>Email:</b> {{ user.email }}</p>
-                <p><b>Status:</b> {% if user.is_active %}Active{% else %}Suspended{% endif %}</p>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Status:</strong> {% if user.is_active %}Active{% else %}Suspended{% endif %}</p>
 
                 <form method="POST" action="{% url 'suspend_user' user.id %}">
                     {% csrf_token %}
-                    <button class="suspend">Suspend User</button>
+                    <button class="suspend" type="submit">Suspend User</button>
                 </form>
             </div>
             {% empty %}
-            <p>No users found</p>
+            <p>No users found.</p>
             {% endfor %}
         </section>
 
         <hr>
 
-        <!-- ================= PENDING ADVISORS ================= -->
-        <section>
+        <section id="advisors">
             <h2>Pending Advisors</h2>
             {% for advisor in advisors %}
             <div class="card">
-                <p><b>Name:</b> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
-                <p><b>Email:</b> {{ advisor.user.email }}</p>
-                <p><b>Phone:</b> {{ advisor.phone }}</p>
-                <p><b>Specialization:</b> {{ advisor.specialization }}</p>
+                <p><strong>Name:</strong> {{ advisor.user.first_name }} {{ advisor.user.last_name }}</p>
+                <p><strong>Email:</strong> {{ advisor.user.email }}</p>
+                <p><strong>Phone:</strong> {{ advisor.phone }}</p>
+                <p><strong>Specialization:</strong> {{ advisor.specialization }}</p>
 
                 <form method="POST" action="{% url 'approve_advisor' advisor.id %}">
                     {% csrf_token %}
-                    <button class="approve">Approve</button>
+                    <button class="approve" type="submit">Approve</button>
                 </form>
 
                 <form method="POST" action="{% url 'reject_advisor' advisor.id %}">
                     {% csrf_token %}
-                    <button class="reject">Reject</button>
+                    <button class="reject" type="submit">Reject</button>
                 </form>
             </div>
             {% empty %}
-            <p>No pending advisors</p>
+            <p>No pending advisors.</p>
             {% endfor %}
         </section>
 
         <hr>
 
-        <!-- ================= PENDING ADVISOR POSTS ================= -->
-        <section>
+        <section id="posts">
             <h2>Pending Advisor Posts</h2>
             {% for post in pending_posts %}
-            <div class="post-card">
+            <div class="card">
                 <h3>{{ post.title }}</h3>
                 <p><strong>Category:</strong> {{ post.category }}</p>
                 <p>{{ post.content }}</p>
                 <p><strong>Advisor:</strong> {{ post.advisor.user.username }}</p>
                 <p><strong>Created At:</strong> {{ post.created_at }}</p>
 
-                <form method="POST" action="{% url 'approve_post' post.id %}" style="display:inline;">
-    {% csrf_token %}
-    <button class="approve">Approve</button>
-</form>
+                <form method="POST" action="{% url 'approve_post' post.id %}" style="display:inline-block;">
+                    {% csrf_token %}
+                    <button class="approve" type="submit">Approve</button>
+                </form>
 
-<form method="POST" action="{% url 'reject_post' post.id %}" style="display:inline;">
-    {% csrf_token %}
-    <button class="reject">Reject</button>
-</form>
+                <form method="POST" action="{% url 'reject_post' post.id %}" style="display:inline-block;">
+                    {% csrf_token %}
+                    <button class="reject" type="submit">Reject</button>
+                </form>
             </div>
             {% empty %}
-            <p>No pending posts</p>
+            <p>No pending advisor posts.</p>
             {% endfor %}
         </section>
 
         <hr>
 
-        <!-- ================= PRODUCTS ================= -->
-        <section>
+        <section id="products">
             <h2>Products</h2>
             <table>
                 <tr>
                     <th>Product</th>
                     <th>Farmer</th>
                     <th>Price</th>
+                    <th>Quantity</th>
                     <th>Status</th>
                 </tr>
                 {% for product in products %}
                 <tr>
                     <td>{{ product.name }}</td>
                     <td>{{ product.farmer.user.username }}</td>
-                    <td>{{ product.price }}</td>
+                    <td>KSh {{ product.price }}</td>
+                    <td>{{ product.quantity }}</td>
                     <td>{{ product.status }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4">No products</td>
+                    <td colspan="5">No products found.</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -134,33 +129,56 @@
 
         <hr>
 
-        <!-- ================= ORDERS ================= -->
-        <section>
+        <section id="orders">
             <h2>Orders</h2>
-            <table>
-                <tr>
-                    <th>Product</th>
-                    <th>Buyer</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                </tr>
-                {% for order in orders %}
-                <tr>
-                    <td>{{ order.produce.name }}</td>
-                    <td>{{ order.buyer_name }}</td>
-                    <td>{{ order.quantity }}</td>
-                    <td>{{ order.total_price }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4">No orders</td>
-                </tr>
-                {% endfor %}
-            </table>
+
+            {% for order in orders %}
+            <div class="card">
+                <p><strong>Order ID:</strong> {{ order.id }}</p>
+                <p><strong>Buyer:</strong> {{ order.buyer.username }}</p>
+                <p><strong>Phone:</strong> {{ order.phone }}</p>
+                <p><strong>Location:</strong> {{ order.location }}</p>
+                <p><strong>Delivery Fee:</strong> KSh {{ order.delivery_fee }}</p>
+                <p><strong>Total Amount:</strong> KSh {{ order.total_amount }}</p>
+                <p><strong>Payment Status:</strong> {{ order.payment_status }}</p>
+                <p><strong>Date:</strong> {{ order.created_at }}</p>
+
+                {% if order.payment_status == "Pending" %}
+                <form method="POST" action="{% url 'confirm_payment' order.id %}">
+                    {% csrf_token %}
+                    <button class="approve" type="submit">Confirm Payment</button>
+                </form>
+                {% endif %}
+
+                {% if order.payment_status == "Paid" %}
+                <form method="POST" action="{% url 'start_delivery' order.id %}">
+                    {% csrf_token %}
+                    <button class="approve" type="submit">Start Delivery</button>
+                </form>
+                {% endif %}
+
+                <div class="order-items">
+                    <h4>Order Items</h4>
+                    {% for item in order.items.all %}
+                    <div class="card">
+                        <p><strong>Product:</strong> {{ item.produce.name }}</p>
+                        <p><strong>Farmer:</strong> {{ item.farmer.user.username }}</p>
+                        <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+                        <p><strong>Item Total:</strong> KSh {{ item.price }}</p>
+                        <p><strong>Status:</strong> {{ item.status }}</p>
+                    </div>
+                    {% empty %}
+                    <p>No items in this order.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% empty %}
+            <p>No orders found.</p>
+            {% endfor %}
         </section>
 
-    </div> <!-- main-content -->
-</div> <!-- dashboard -->
+    </div>
+</div>
 
 </body>
 </html>

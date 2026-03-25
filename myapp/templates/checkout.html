@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+</head>
+<body>
+
+<header>
+    <div class="logo">ShambaSphere</div>
+    <nav>
+        <a href="{% url 'cart_view' %}">Back to Cart</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<section class="cart-container">
+    <h2>Checkout</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="phone" placeholder="Phone Number" required>
+        <input type="text" name="location" placeholder="Delivery Location" required>
+
+        <h3>Order Summary</h3>
+
+        {% for item in cart_items %}
+            <p>{{ item.produce.name }} - {{ item.quantity }} item(s)</p>
+        {% endfor %}
+
+        <p><strong>Items Total:</strong> KSh {{ items_total }}</p>
+        <p><strong>Delivery Fee (20%):</strong> KSh {{ delivery_fee }}</p>
+        <h3>Total to Pay: KSh {{ cart_total }}</h3>
+
+        <button type="submit" class="checkout-btn">Place Order</button>
+    </form>
+</section>
+
+</body>
+</html>

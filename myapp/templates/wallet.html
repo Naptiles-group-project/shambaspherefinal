@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Wallet - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/wallet.css' %}">
+</head>
+<body>
+
+<header>
+    <div class="logo">ShambaSphere</div>
+    <nav>
+        <a href="{% url 'farmer_dashboard' %}">Dashboard</a>
+        <a href="{% url 'advisory_feed' %}">Advisory Feed</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+</header>
+
+<section class="wallet-container">
+    <h2>My Wallet</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <div class="wallet-card">
+        <h3>Available Balance</h3>
+        <p class="balance">KSh {{ farmer.balance }}</p>
+        <p><strong>M-Pesa Number:</strong> {{ farmer.phone }}</p>
+        <p><strong>Farmer Name:</strong> {{ farmer.user.first_name }} {{ farmer.user.last_name }}</p>
+    </div>
+
+    <div class="withdraw-card">
+        <h3>Request Withdrawal</h3>
+        <form method="POST" action="{% url 'request_withdrawal' %}">
+            {% csrf_token %}
+            <input type="number" name="amount" step="0.01" placeholder="Enter amount" required>
+            <button type="submit">Request Withdrawal</button>
+        </form>
+    </div>
+
+    <div class="history-card">
+        <h3>Withdrawal History</h3>
+
+        {% for withdrawal in withdrawals %}
+        <div class="history-item">
+            <p><strong>Amount:</strong> KSh {{ withdrawal.amount }}</p>
+            <p><strong>Status:</strong> {{ withdrawal.status }}</p>
+            <p><strong>Date:</strong> {{ withdrawal.created_at }}</p>
+        </div>
+        {% empty %}
+        <p>No withdrawals yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+</body>
+</html>

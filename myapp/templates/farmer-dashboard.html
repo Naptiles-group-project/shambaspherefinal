@@ -10,11 +10,13 @@
 <body>
 
 <header>
-    <div class="logo">ShambaSphere</div>
+    <div class="logo">ShambaSphere</div>    
     <nav>
         <ul>
             <li><a href="{% url 'marketplace' %}">Marketplace</a></li>
+            <li><a href="{% url 'wallet_view' %}">Wallet</a></li>
             <li><a href="#add-produce-section">Add Produce</a></li>
+            <li><a href="{% url 'farmer_orders' %}">My Orders</a></li>
             <li><a href="#my-produce">My Listings</a></li>
             <a href="{% url 'advisory_feed' %}" class="advisory-btn">View Advisory Feed</a>
             <li><a href="{% url 'logout' %}">Logout</a></li>
@@ -25,7 +27,7 @@
 <!-- Add Produce Section -->
 <section id="add-produce-section">
     <h2>Add New Produce</h2>
-    <form id="add-produce-form" enctype="multipart/form-data">
+   <form method="POST" id="add-produce-form" enctype="multipart/form-data">
         {% csrf_token %}
         <input type="text" name="produceName" placeholder="Produce Name" required>
         <input type="number" name="quantity" placeholder="Quantity (kg)" required>
@@ -54,6 +56,25 @@
         {% endfor %}
     </div>
 </section>
+
+<h2>Sales History</h2>
+
+{% for item in orders %}
+<div class="card">
+    <p><strong>Product:</strong> {{ item.produce.name }}</p>
+    <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+    <p><strong>Total:</strong> KSh {{ item.price }}</p>
+   <p><strong>Status:</strong> {{ item.status }}</p>
+
+    {% if item.status == "Delivery" %}
+    <p style="color: orange;">🚚 Deliver this product</p>
+    {% endif %}
+    <p><strong>Buyer Phone:</strong> {{ item.order.phone }}</p>
+    <p><strong>Location:</strong> {{ item.order.location }}</p>
+</div>
+{% empty %}
+<p>No sales yet.</p>
+{% endfor %}
 
 <!-- Marketplace Preview -->
 <section id="marketplace">

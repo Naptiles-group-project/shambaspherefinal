@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Farmer Orders - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/farmer-orders.css' %}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <div class="sidebar">
+        <h2>ShambaSphere</h2>
+        <ul>
+            <li><a href="{% url 'farmer_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'farmer_orders' %}" class="active">My Orders</a></li>
+            <li><a href="#">My Listings</a></li>
+            <li><a href="#">Wallet</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Orders From Buyers</h1>
+
+        {% for item in orders %}
+        <div class="card">
+
+            <p><strong>Order ID:</strong> {{ item.order.id }}</p>
+            <p><strong>Product:</strong> {{ item.produce.name }}</p>
+            <p><strong>Buyer:</strong> {{ item.order.buyer.username }}</p>
+            <p><strong>Phone:</strong> {{ item.order.phone }}</p>
+            <p><strong>Location:</strong> {{ item.order.location }}</p>
+
+            <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+            <p><strong>Item Total:</strong> KSh {{ item.price }}</p>
+
+            <p><strong>Status:</strong> {{ item.status }}</p>
+            <p><strong>Payment:</strong> {{ item.order.payment_status }}</p>
+
+            <!-- DELIVERY ACTION -->
+            {% if item.status == "On Delivery" %}
+            <form method="POST" action="{% url 'complete_delivery' item.id %}">
+                {% csrf_token %}
+                <button class="complete">Mark Delivered</button>
+            </form>
+            {% endif %}
+
+        </div>
+        {% empty %}
+        <p>No orders yet.</p>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -2,116 +2,165 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-# Farmer Profile
+# ================= FARMER =================
 class FarmerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    
-    # Contact & Personal
+
     phone = models.CharField(max_length=20)
     county = models.CharField(max_length=100)
-    profile_pic = models.ImageField(upload_to='profiles/', blank=True, null=True)
-    
-    # Farm Info
+
     farm_name = models.CharField(max_length=200)
     farming_type = models.CharField(max_length=100)
     farm_size = models.FloatField()
     experience = models.IntegerField()
     farm_description = models.TextField(blank=True)
-    
-    # Produce Categories
-    produce_categories = models.CharField(max_length=255, blank=True)  # comma-separated
-    
-    # Availability
+
+    produce_categories = models.CharField(max_length=255, blank=True)
+
     active_status = models.CharField(max_length=10)
     harvest_season = models.CharField(max_length=50)
     delivery = models.CharField(max_length=10)
+
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.user.username
 
 
-# Produce model
+# ================= PRODUCE =================
 class Produce(models.Model):
     farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    quantity = models.FloatField()  # in kg
-    price = models.DecimalField(max_digits=10, decimal_places=2)  # in KSh
+    quantity = models.FloatField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='produce_images/')
     status = models.CharField(max_length=20, default='Available')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} - {self.farmer.user.username}"
+        return self.name
 
 
+# ================= CART =================
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-# Order model
-class Order(models.Model):
+    def __str__(self):
+        return f"{self.user.username} Cart"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     produce = models.ForeignKey(Produce, on_delete=models.CASCADE)
-    buyer_name = models.CharField(max_length=100)
-    buyer_phone = models.CharField(max_length=20)
-    buyer_location = models.CharField(max_length=200)
+    quantity = models.PositiveIntegerField(default=1)
 
-    quantity = models.FloatField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    def __str__(self):
+        return f"{self.produce.name} ({self.quantity})"
 
-    status = models.CharField(
+
+# ================= ORDER =================
+class Order(models.Model):
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    phone = models.CharField(max_length=20)
+    location = models.CharField(max_length=255)
+
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    payment_status = models.CharField(
         max_length=20,
-        default="Pending",
         choices=[
             ("Pending", "Pending"),
-            ("Accepted", "Accepted"),
-            ("Delivered", "Delivered")
-        ]
+            ("Paid", "Paid"),
+        ],
+        default="Pending"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.produce.name} order by {self.buyer_name}"
+        return f"Order #{self.id} by {self.buyer.username}"
 
 
+# ================= ORDER ITEM =================
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items")
+    produce = models.ForeignKey(Produce, on_delete=models.CASCADE)
+    farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE)
 
-# advisor profile
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("Pending", "Pending"),
+            ("Paid", "Paid"),
+            ("Delivery", "Delivery"),
+            ("Completed", "Completed"),
+        ],
+        default="Pending"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.produce.name} ({self.quantity})"
+
+
+# ================= ADVISOR =================
 class AdvisorProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20)
     specialization = models.CharField(max_length=100)
     bio = models.TextField()
-    status = models.CharField(max_length=20, default="Pending")  # Pending / Approved
+    status = models.CharField(max_length=20, default="Pending")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
 
-    #advisorpost model
-class AdvisorPost(models.Model):
-    advisor = models.ForeignKey(AdvisorProfile, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    category = models.CharField(max_length=100)
-    content = models.TextField()
-    image = models.ImageField(upload_to='advisor_posts/', null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return self.title
-   
-   #for advisor-page
 class AdvisorPost(models.Model):
     advisor = models.ForeignKey(AdvisorProfile, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     category = models.CharField(max_length=100)
     content = models.TextField()
     image = models.ImageField(upload_to='advisor_posts/', null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     status = models.CharField(
         max_length=20,
-        choices=[("Pending", "Pending"), ("Approved", "Approved"), ("Rejected", "Rejected")],
+        choices=[
+            ("Pending", "Pending"),
+            ("Approved", "Approved"),
+            ("Rejected", "Rejected")
+        ],
         default="Pending"
     )
+
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
-  
+
+# ================= WITHDRAWAL =================
+class Withdrawal(models.Model):
+    farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("Pending", "Pending"),
+            ("Approved", "Approved"),
+            ("Paid", "Paid"),
+        ],
+        default="Pending"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.farmer.user.username} - {self.amount}"

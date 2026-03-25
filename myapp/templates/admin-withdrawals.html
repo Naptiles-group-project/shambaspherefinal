@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Withdrawals - ShambaSphere</title>
+    <link rel="stylesheet" href="{% static 'css/admin-withdrawals.css' %}">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <div class="sidebar">
+        <h2>ShambaSphere</h2>
+        <ul>
+            <li><a href="{% url 'admin_dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'admin_withdrawals' %}" class="active-link">Withdrawals</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h1>Withdrawal Management</h1>
+
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h3>{{ withdrawals|length }}</h3>
+                <p>Total Requests</p>
+            </div>
+        </div>
+
+        <section>
+            <h2>All Withdrawals</h2>
+
+            {% for withdrawal in withdrawals %}
+            <div class="withdrawal-card">
+                <p><strong>Farmer:</strong> {{ withdrawal.farmer.user.first_name }} {{ withdrawal.farmer.user.last_name }}</p>
+                <p><strong>Username:</strong> {{ withdrawal.farmer.user.username }}</p>
+                <p><strong>Phone:</strong> {{ withdrawal.farmer.phone }}</p>
+                <p><strong>Amount:</strong> KSh {{ withdrawal.amount }}</p>
+                <p><strong>Status:</strong> {{ withdrawal.status }}</p>
+                <p><strong>Date:</strong> {{ withdrawal.created_at }}</p>
+                <p><strong>Current Balance:</strong> KSh {{ withdrawal.farmer.balance }}</p>
+
+                <div class="action-buttons">
+                    {% if withdrawal.status == "Pending" %}
+                    <form method="POST" action="{% url 'approve_withdrawal' withdrawal.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="approve-btn">Approve</button>
+                    </form>
+                    {% endif %}
+
+                    {% if withdrawal.status == "Approved" %}
+                    <form method="POST" action="{% url 'mark_withdrawal_paid' withdrawal.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="paid-btn">Mark as Paid</button>
+                    </form>
+                    {% endif %}
+
+                    {% if withdrawal.status == "Paid" %}
+                    <button type="button" class="done-btn" disabled>Paid</button>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-text">No withdrawal requests found.</p>
+            {% endfor %}
+        </section>
+    </div>
+
+</div>
+
+</body>
+</html>
