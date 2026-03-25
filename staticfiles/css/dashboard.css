@@ -1,0 +1,260 @@
+/* General */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #eaf6f4;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #4EA685;
+    color: white;
+}
+
+header .logo {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+header nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+header nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Sections */
+section {
+    padding: 30px 50px;
+}
+
+h2 {
+    color: #4EA685;
+    margin-bottom: 20px;
+}
+
+/* Dashboard Stats */
+.dashboard-stats {
+    background-color: #ffffff;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+
+
+
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.stat h3 {
+    font-size: 2rem;
+    color: #4EA685;
+}
+
+.stat p {
+    font-size: 1rem;
+    color: #000000;
+}
+
+/* Add Produce Form */
+#add-produce-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    gap: 15px;
+}
+
+#add-produce-form input {
+    padding: 10px;
+    border: 1px solid #4EA685;
+    border-radius: 5px;
+}
+
+#add-produce-form button {
+    padding: 12px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#add-produce-form button:hover {
+    background-color: #333;
+}
+
+/* Produce Cards */
+.produce-card {
+    display: inline-block;
+    width: 200px;
+    margin: 10px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 8px 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.produce-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.produce-card button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+/* Status Badge */
+.status-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 5px 10px;
+}
+    
+.edit-btn {
+    background-color: #4EA685;
+    color: white;
+}
+
+
+
+.delete-btn {
+    background-color: black;
+    color: white;
+}
+
+.simulate-order-btn {
+    background-color: #57B894;
+    color: white;
+}
+
+/* Orders Section */
+.orders-section {
+    background-color: #eaf6f4;
+}
+
+.order-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
+}
+
+.order-card p {
+    margin: 5px 0;
+}
+
+.order-card button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.accept-btn {
+    background-color: #4EA685;
+    color: white;
+}
+
+.reject-btn {
+    background-color: black;
+    color: white;
+}
+
+/* Marketplace Preview */
+#marketplace-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+
+
+/* MODAL STYLING */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background: white;
+    width: 350px;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border: 1px solid #4EA685;
+    border-radius: 5px;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 10px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.close-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

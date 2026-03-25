@@ -1,0 +1,108 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #0a5c2f;
+}
+
+h2 {
+    color: #0a5c2f;
+    border-bottom: 2px solid #0a5c2f;
+    padding-bottom: 5px;
+}
+
+section {
+    margin-bottom: 25px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+input:focus, select:focus {
+    border-color: #0a5c2f;
+    outline: none;
+}
+
+.strength-meter {
+    height: 6px;
+    background: #ddd;
+    margin: 5px 0 10px;
+    border-radius: 5px;
+}
+
+#strengthBar {
+    height: 6px;
+    width: 0%;
+    background: red;
+    border-radius: 5px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #0a5c2f;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-btn:hover {
+    background: black;
+}
+
+.terms {
+    font-size: 14px;
+}
+.profile-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f0f8f3;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.profile-display img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #0a5c2f;
+}
+
+.profile-display h3 {
+    margin: 0;
+    color: #0a5c2f;
+}
+
+.profile-display p {
+    margin: 0;
+    font-size: 14px;
+}
