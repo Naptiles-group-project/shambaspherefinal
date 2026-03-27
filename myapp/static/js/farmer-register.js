@@ -75,7 +75,7 @@ function displayErrors(errors) {
 }
 
 /* Form submission */
-form.addEventListener("submit", async function(e) {
+/*form.addEventListener("submit", async function(e) {
     e.preventDefault();
 
     // Clear previous errors
