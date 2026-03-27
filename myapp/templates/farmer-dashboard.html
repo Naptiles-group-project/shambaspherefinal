@@ -9,18 +9,23 @@
 </head>
 <body>
 
-<header>
-    <div class="logo">ShambaSphere</div>    
-    <nav>
-        <ul>
+<header class="topbar">
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+        ☰
+    </button>
+
+    <div class="logo">ShambaSphere</div>
+
+    <nav id="mobileNav">
+        <ul class="nav-links">
             <li><a href="{% url 'marketplace' %}">Marketplace</a></li>
             <li><a href="{% url 'wallet_view' %}">Wallet</a></li>
             <li><a href="#add-produce-section">Add Produce</a></li>
             <li><a href="{% url 'farmer_orders' %}">My Orders</a></li>
             <li><a href="#my-produce">My Listings</a></li>
-           <li><a href="{% url 'advisory_feed' %}" class="advisory-btn">View Advisory Feed</a></li> 
+            <li><a href="{% url 'advisory_feed' %}" class="advisory-btn">View Advisory Feed</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            
+        </ul>
     </nav>
 </header>
 
@@ -33,6 +38,7 @@
         <input type="number" name="quantity" placeholder="Quantity (kg)" required>
         <input type="number" name="price" placeholder="Price per kg (KSh)" required>
         <input type="file" name="image" id="image-upload" accept="image/*" required>
+        <img id="image-preview" style="display:none; width:100%; max-width:220px; margin-top:10px; border-radius:10px;" alt="Preview">
         <button type="submit">Add Produce</button>
     </form>
 </section>
@@ -278,6 +284,15 @@ document.getElementById('saveChangesBtn').addEventListener('click', () => {
             document.getElementById('editModal').style.display = 'none';
         } else alert('Update failed: ' + json.error);
     }).catch(err => console.error(err));
+});
+</script>
+
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const mobileNav = document.getElementById('mobileNav');
+
+menuToggle.addEventListener('click', function () {
+    mobileNav.classList.toggle('active');
 });
 </script>
 

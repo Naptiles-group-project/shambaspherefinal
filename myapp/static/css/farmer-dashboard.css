@@ -1,4 +1,8 @@
 /* General */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,32 +10,53 @@ body {
     background-color: #eaf6f4;
 }
 
-header {
+/* Header / Navbar */
+.topbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 20px 50px;
+    justify-content: space-between;
+    padding: 16px 20px;
     background-color: #4EA685;
     color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
-header .logo {
+.logo {
     font-size: 1.8rem;
     font-weight: bold;
 }
 
-header nav ul {
+.menu-toggle {
+    display: none;
+    background: white;
+    color: #2e7d32;
+    border: none;
+    font-size: 1.6rem;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Desktop nav */
+.nav-links {
     list-style: none;
     display: flex;
-    gap: 20px;
+    align-items: center;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
 }
 
-header nav ul li a {
+.nav-links li a {
     color: white;
     text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
 }
 
-header nav ul li a:hover {
+.nav-links li a:hover {
     text-decoration: underline;
 }
 
@@ -45,140 +70,223 @@ h2 {
     margin-bottom: 20px;
 }
 
-/* Produce Cards */
-.produce-card {
-    display: inline-block;
-    width: 200px;
-    margin: 10px;
-    background-color: white;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0px 8px 15px rgba(0,0,0,0.1);
-    text-align: center;
+/* Form */
+#add-produce-form {
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.produce-card img {
+#add-produce-form input,
+#add-produce-form button,
+.modal-content input,
+.modal-content select,
+.modal-content button {
     width: 100%;
-    height: 120px;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #6bb59d;
+}
+
+#add-produce-form button,
+.modal-content button,
+.edit-btn,
+.delete-btn {
+    border: none;
+    cursor: pointer;
+}
+
+#add-produce-form button,
+.modal-content button {
+    background: black;
+    color: white;
+    font-weight: bold;
+}
+
+/* Produce + Marketplace Grid */
+#produce-list,
+#marketplace-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.produce-item,
+.marketplace-item,
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.produce-item img,
+.marketplace-item img,
+.card img {
+    width: 100%;
+    max-width: 100%;
+    height: 180px;
     object-fit: cover;
     border-radius: 10px;
+    display: block;
+    margin-bottom: 12px;
 }
 
-.produce-card button {
-    margin-top: 5px;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.produce-item p,
+.marketplace-item p,
+.card p {
+    margin: 8px 0;
+}
+
+.edit-btn {
     background-color: #4EA685;
     color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-right: 8px;
 }
 
-/* Orders Section */
-.my-orders .order-card {
-    background-color: white;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px 0;
-    box-shadow: 0px 5px 10px rgba(0,0,0,0.1);
+.delete-btn {
+    background-color: #d9534f;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 8px;
 }
 
-.order-card p {
-    margin: 5px 0;
+/* Sales cards */
+.card {
+    margin: 20px 50px;
 }
 
-
-
-
-/* ===============================
-   ORDERS SECTION
-=================================*/
-
-.orders-section{
-    margin-top:40px;
+/* Modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 2000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
-.orders-section h2{
-    color:#2e7d32;
-    margin-bottom:20px;
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
 }
 
-/* Table wrapper */
-
-.orders-table-wrapper{
-    overflow-x:auto;
-    background:white;
-    border-radius:10px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 24px;
+    cursor: pointer;
 }
-
-/* Table */
-
-.orders-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.orders-table thead{
-    background:#2e7d32;
-    color:white;
-}
-
-.orders-table th,
-.orders-table td{
-    padding:14px;
-    text-align:left;
-    border-bottom:1px solid #eee;
-}
-
-/* Hover effect */
-
-.orders-table tbody tr:hover{
-    background:#f5f5f5;
-}
-
-/* Status styles */
-
-.status{
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:13px;
-    font-weight:600;
-}
-
-/* Pending */
-
-.status.pending{
-    background:#fff3cd;
-    color:#856404;
-}
-
-/* Accepted */
-
-.status.accepted{
-    background:#d4edda;
-    color:#155724;
-}
-
-/* Delivered */
-
-.status.delivered{
-    background:#cce5ff;
-    color:#004085;
-}
-
 
 .advisory-btn {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 10px 16px;
     background-color: #4CAF50;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
-    margin-bottom: 15px;
+    border-radius: 6px;
     transition: background-color 0.3s;
 }
 
 .advisory-btn:hover {
     background-color: #45a049;
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .topbar {
+        padding: 14px 16px;
+        justify-content: flex-start;
+        gap: 12px;
+        position: relative;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .logo {
+        font-size: 1.4rem;
+    }
+
+    #mobileNav {
+        position: absolute;
+        top: 70px;
+        left: 16px;
+        width: calc(100% - 32px);
+        display: none;
+    }
+
+    #mobileNav.active {
+        display: block;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav-links li {
+        width: 100%;
+        border-bottom: 1px solid #eee;
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none;
+    }
+
+    .nav-links li a {
+        display: block;
+        width: 100%;
+        padding: 14px 16px;
+        color: #2e7d32;
+        text-decoration: none;
+    }
+
+    section {
+        padding: 24px 16px;
+    }
+
+    .card {
+        margin: 16px;
+    }
+
+    .produce-item img,
+    .marketplace-item img,
+    .card img {
+        height: 160px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo {
+        font-size: 1.2rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+
+    #add-produce-form input,
+    #add-produce-form button {
+        font-size: 15px;
+        padding: 12px;
+    }
+}
+
