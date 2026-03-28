@@ -1,4 +1,5 @@
 from decimal import Decimal
+from multiprocessing import context
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -503,21 +504,29 @@ def farmer_dashboard(request):
     }
 
     return render(request, "farmer-dashboard.html", context)
+from django.shortcuts import render
+from .models import Produce, Cart
 
-
-
-@login_required
 def marketplace(request):
-    produce_list = Produce.objects.filter(status="Available").order_by("-created_at")
+    query = request.GET.get("q")
+    category = request.GET.get("category")
+
+    produce_list = Produce.objects.filter(status="Available")
+
+    if query:
+        produce_list = produce_list.filter(name__icontains=query)
+
+    if category and category != "All":
+        produce_list = produce_list.filter(name__icontains=category)
+
+    produce_list = produce_list.order_by("-created_at")
+
     cart, created = Cart.objects.get_or_create(user=request.user)
 
-    context = {
+    return render(request, "marketplace.html", {
         "produce_list": produce_list,
         "cart_count": cart.items.count(),
-    }
-
-    return render(request, "marketplace.html", context)
-
+    })  
 
 # =========================
 # LEGACY ORDER VIEW (KEPT COMMENTED)

@@ -13,7 +13,17 @@
 <header class="navbar">
     <div class="logo">🌾 ShambaSphere</div>
 
-    <input type="text" id="searchInput" placeholder="Search products...">
+    <!-- <input type="text" id="searchInput" placeholder="Search products..."> -->
+   <form method="GET" class="search-form">
+    <input 
+        type="text" 
+        name="q" 
+        placeholder="Search products..." 
+        value="{{ request.GET.q }}"
+        class="search-input"
+    >
+    <button type="submit" class="search-btn">🔍</button>
+</form>
 
     <div class="nav-actions">
        <a href="{% url 'cart_view' %}">🛒 Cart ({{ cart_count }})</a>
@@ -33,11 +43,11 @@
     <aside class="sidebar">
         <h3>Categories</h3>
         <ul>
-            <li onclick="filterCategory('All')">All</li>
-            <li onclick="filterCategory('Vegetables')">Vegetables</li>
-            <li onclick="filterCategory('Fruits')">Fruits</li>
-            <li onclick="filterCategory('Grains')">Grains</li>
-            <li onclick="filterCategory('Livestock')">Livestock</li>
+            <li><a href="?category=All">All</a></li>
+            <li><a href="?category=Vegetables">Vegetables</a></li>
+            <li><a href="?category=Fruits">Fruits</a></li>
+            <li><a href="?category=Grains">Grains</a></li>
+            <li><a href="?category=Livestock">Livestock</a></li>
         </ul>
     </aside>
 
@@ -46,23 +56,31 @@
     <div class="products-grid" id="productsContainer">
 
         {% for produce in produce_list %}
-        <div class="product-card">
+        
+
+          <div class="product-card">
 
             <img src="{{ produce.image.url }}" alt="{{ produce.name }}">
 
             <h4>{{ produce.name }}</h4>
 
-            <p>KSh {{ produce.price }} / kg</p>
+            <div class="product-meta">
+                <p class="price">KES {{ produce.price }} / kg</p>
+                <p>Stock: {{ produce.quantity }} kg</p>
+                <p>Farmer: {{ produce.farmer.user.username }}</p>
+            </div>
 
-            <p>Quantity: {{ produce.quantity }} kg</p>
-
-            <p>Farmer: {{ produce.farmer.user.username }}</p>
-            
-            
+        {% if produce.quantity > 0 %}
             <form method="POST" action="{% url 'add_to_cart' produce.id %}">
-            {% csrf_token %}
-            <button type="submit">Add to Cart</button> 
-            </form> 
+                {% csrf_token %}
+                <button type="submit">Add to Cart</button>
+            </form>
+        {% else %}
+            <button disabled style="background:gray;">Out of Stock</button>
+        {% endif %}
+          </div>
+
+
 
             <!--<button onclick="addToCart('{{ produce.name }}', '{{ produce.price }}')">
                 Add to Cart
@@ -74,7 +92,7 @@
 
         </div>
 
-<!-- order modal -->
+ order modal -->
 
         <div id="orderModal" class="cart-modal">
     <div class="cart-card">
@@ -130,6 +148,6 @@
     </div>
 </div>
 
-<!-- <script src="{% static 'js/marketplace.js' %}"></script> -->
+<script src="{% static 'js/marketplace.js' %}"></script> -->
 </body>
 </html>
