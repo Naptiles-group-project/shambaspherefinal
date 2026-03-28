@@ -39,7 +39,7 @@ urlpatterns = [
     path('add-to-cart/<int:produce_id>/', views.add_to_cart, name='add_to_cart'),
     path('remove-from-cart/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('checkout/', views.checkout, name='checkout'),
-
+    path("payment-success/", views.payment_success, name="payment_success"),
     # Delivery confirmation
     path('confirm-delivery/<int:item_id>/', views.confirm_delivery, name='confirm_delivery'),
 
@@ -71,5 +71,5 @@ urlpatterns = [
     path('farmer-orders/', views.farmer_orders, name='farmer_orders'),
     path('farmer-listings/', views.farmer_listings, name='farmer_listings'),
     path('update-delivery-fee/<int:order_id>/', views.update_delivery_fee, name='update_delivery_fee'),
-
+    path("verify-payment/<str:ref>/", views.verify_payment, name="verify_payment"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

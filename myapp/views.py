@@ -1,6 +1,6 @@
 from decimal import Decimal
 from multiprocessing import context
-
+from decimal import Decimal
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout as auth_logout
@@ -506,7 +506,7 @@ def farmer_dashboard(request):
     return render(request, "farmer-dashboard.html", context)
 from django.shortcuts import render
 from .models import Produce, Cart
-
+@login_required
 def marketplace(request):
     query = request.GET.get("q")
     category = request.GET.get("category")
@@ -1087,60 +1087,60 @@ def reject_post(request, post_id):
 #
 #     return redirect("admin_dashboard")
 
-@login_required
-def checkout(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    cart_items = cart.items.select_related("produce", "produce__farmer").all()
+# @login_required
+# def checkout(request):
+#     cart, created = Cart.objects.get_or_create(user=request.user)
+#     cart_items = cart.items.select_related("produce", "produce__farmer").all()
 
-    if not cart_items.exists():
-        messages.info(request, "Your cart is empty.")
-        return redirect("cart_view")
+#     if not cart_items.exists():
+#         messages.info(request, "Your cart is empty.")
+#         return redirect("cart_view")
 
-    items_total = sum(
-        [item.produce.price * Decimal(item.quantity) for item in cart_items],
-        Decimal("0.00"),
-    )
+#     items_total = sum(
+#         [item.produce.price * Decimal(item.quantity) for item in cart_items],
+#         Decimal("0.00"),
+#     )
 
-    delivery_fee = items_total * Decimal("0.20")
-    total_amount = items_total + delivery_fee
+#     delivery_fee = items_total * Decimal("0.20")
+#     total_amount = items_total + delivery_fee
 
-    if request.method == "POST":
-        phone = request.POST.get("phone")
-        location = request.POST.get("location")
+#     if request.method == "POST":
+#         phone = request.POST.get("phone")
+#         location = request.POST.get("location")
 
-        order = Order.objects.create(
-            buyer=request.user,
-            phone=phone,
-            location=location,
-            delivery_fee=delivery_fee,
-            total_amount=total_amount,
-            payment_status="Pending",
-        )
+#         order = Order.objects.create(
+#             buyer=request.user,
+#             phone=phone,
+#             location=location,
+#             delivery_fee=delivery_fee,
+#             total_amount=total_amount,
+#             payment_status="Pending",
+#         )
 
-        for item in cart_items:
-            item_total = item.produce.price * Decimal(item.quantity)
+#         for item in cart_items:
+#             item_total = item.produce.price * Decimal(item.quantity)
 
-            OrderItem.objects.create(
-                order=order,
-                produce=item.produce,
-                farmer=item.produce.farmer,
-                quantity=item.quantity,
-                price=item_total,
-                status="Pending",
-            )
+#             OrderItem.objects.create(
+#                 order=order,
+#                 produce=item.produce,
+#                 farmer=item.produce.farmer,
+#                 quantity=item.quantity,
+#                 price=item_total,
+#                 status="Pending",
+#             )
 
-        cart.items.all().delete()
-        messages.success(request, "Order placed successfully.")
-        return redirect("buyer_dashboard")
+#         cart.items.all().delete()
+#         messages.success(request, "Order placed successfully.")
+#         return redirect("buyer_dashboard")
 
-    context = {
-        "cart_items": cart_items,
-        "items_total": items_total,
-        "delivery_fee": delivery_fee,
-        "cart_total": total_amount,
-    }
+#     context = {
+#         "cart_items": cart_items,
+#         "items_total": items_total,
+#         "delivery_fee": delivery_fee,
+#         "cart_total": total_amount,
+#     }
 
-    return render(request, "checkout.html", context)
+#     return render(request, "checkout.html", context)
 
 
 #@staff_member_required
@@ -1443,3 +1443,86 @@ def update_delivery_fee(request, order_id):
         order.save()
 
     return redirect("admin_orders")
+
+
+
+
+import requests
+from django.conf import settings
+from django.shortcuts import redirect
+
+def verify_payment(request, ref):
+    url = f"https://api.paystack.co/transaction/verify/{ref}"
+    
+    headers = {
+        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+    }
+
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    if data["data"]["status"] == "success":
+       
+        return redirect("success_page")
+
+    return redirect("cart_view")
+
+import requests
+
+def checkout(request):
+    cart = Cart.objects.get(user=request.user)
+    cart_items = cart.items.all()
+
+    items_total = sum(item.produce.price * item.quantity for item in cart_items)
+    delivery_fee = items_total * Decimal("0.20")
+    total = items_total + delivery_fee
+
+    if request.method == "POST":
+        email = request.user.email
+        amount = int(total * Decimal("100"))  # Paystack uses kobo (×100)
+
+        url = "https://api.paystack.co/transaction/initialize"
+        headers = {
+            "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+        }
+        data = {
+            "email": email,
+            "amount": amount,
+            "callback_url": "http://127.0.0.1:8000/payment-success/"
+        }
+
+        response = requests.post(url, headers=headers, json=data)
+        res_data = response.json()
+
+        if res_data["status"]:
+            return redirect(res_data["data"]["authorization_url"])
+
+    return render(request, "checkout.html", {
+         "paystack_public_key": settings.PAYSTACK_PUBLIC_KEY,
+        "cart_items": cart_items,
+        "items_total": items_total,
+        "delivery_fee": delivery_fee,
+        "cart_total": total
+       
+    })
+
+
+def payment_success(request):
+    reference = request.GET.get('reference')
+
+    url = f"https://api.paystack.co/transaction/verify/{reference}"
+    headers = {
+        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+    }
+
+    response = requests.get(url, headers=headers)
+    res_data = response.json()
+
+    if res_data["status"] and res_data["data"]["status"] == "success":
+        # Save order h
+        cart = Cart.objects.get(user=request.user)
+        cart.items.all().delete()
+
+        return render(request, "success.html")
+
+    return render(request, "failed.html")

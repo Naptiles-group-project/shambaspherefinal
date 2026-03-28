@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - ShambaSphere</title>
-    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
 </head>
 <body>
 
@@ -35,10 +35,38 @@
         <p><strong>Items Total:</strong> KSh {{ items_total }}</p>
         <p><strong>Delivery Fee (20%):</strong> KSh {{ delivery_fee }}</p>
         <h3>Total to Pay: KSh {{ cart_total }}</h3>
-
-        <button type="submit" class="checkout-btn">Place Order</button>
-    </form>
+        <button type="button" onclick="payWithPaystack()" class="checkout-btn" style="padding: 10px;background-color: green;color: white;border: none;border-radius: 3px;">
+    Pay with Paystack
+    
+    </button>
+    
+         </form>
 </section>
 
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+
+
+<script>
+function payWithPaystack() {
+let handler = PaystackPop.setup({
+    key: "{{ paystack_public_key }}",
+    email: "{{ request.user.email }}",
+    amount: parseInt("{{ cart_total }}") * 100,
+    currency: "KES",
+
+    callback: function(response) {
+        window.location.href = "/verify-payment/" + response.reference;
+    },
+
+    onClose: function() {
+        alert("Payment cancelled");
+    }
+});
+
+handler.openIframe();
+}
+
+</script>
 </body>
 </html>
