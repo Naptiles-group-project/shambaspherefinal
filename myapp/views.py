@@ -217,7 +217,7 @@ def farmer_register(request):
         profile_pic = request.FILES.get("profilePic")
 
         if User.objects.filter(username=username).exists():
-            return JsonResponse({"success": False, "error": "Username already exists"})
+            return redirect("farmer_dashboard")
 
         user = User.objects.create_user(
             username=username,
@@ -226,6 +226,7 @@ def farmer_register(request):
             first_name=first_name,
             last_name=last_name,
         )
+        profile_pic = request.FILES.get("profilePic")
 
         FarmerProfile.objects.create(
             user=user,
@@ -234,18 +235,19 @@ def farmer_register(request):
             profile_pic=profile_pic,
             farm_name=farm_name,
             farming_type=farming_type,
-            farm_size=float(farm_size) if farm_size else 0,
-            experience=int(experience) if experience else 0,
+            farm_size=float(farm_size or 0),
+            experience=int(experience or 0),
             farm_description=farm_description,
             produce_categories=produce_categories_str,
             active_status=active_status,
             harvest_season=harvest_season,
             delivery=delivery,
         )
+       
 
         login(request, user)
 
-        return JsonResponse({"success": True, "redirect_url": "/farmer-dashboard/"})
+        return redirect("farmer_dashboard")
 
     return render(request, "farmer-register.html")
 
@@ -355,55 +357,55 @@ def farmer_register(request):
 #
 #     # return render(request, 'farmer-dashboard.html', context)
 
-@login_required
-def farmer_dashboard(request):
-    try:
-        profile = FarmerProfile.objects.get(user=request.user)
-    except ObjectDoesNotExist:
-        return redirect("farmer_register")
+# @login_required
+# def farmer_dashboard(request):
+#     try:
+#         profile = FarmerProfile.objects.get(user=request.user)
+#     except ObjectDoesNotExist:
+#         return redirect("farmer_register")
 
-    if request.method == "POST":
-        name = request.POST.get("produceName")
-        quantity = request.POST.get("quantity")
-        price = request.POST.get("price")
-        image = request.FILES.get("image")
+#     if request.method == "POST":
+#         name = request.POST.get("produceName")
+#         quantity = request.POST.get("quantity")
+#         price = request.POST.get("price")
+#         image = request.FILES.get("image")
 
-        if name and quantity and price and image:
-            Produce.objects.create(
-                farmer=profile,
-                name=name,
-                quantity=float(quantity),
-                price=Decimal(price),
-                image=image,
-                status="Available",
-            )
-            return redirect("farmer_dashboard")
+#         if name and quantity and price and image:
+#             Produce.objects.create(
+#                 farmer=profile,
+#                 name=name,
+#                 quantity=float(quantity),
+#                 price=Decimal(price),
+#                 image=image,
+#                 status="Available",
+#             )
+#             return redirect("farmer_dashboard")
 
-    produce_list = Produce.objects.filter(farmer=profile).order_by("-created_at")
-    marketplace_list = Produce.objects.filter(status="Available").order_by("-created_at")
-    orders = OrderItem.objects.filter(
-        farmer=profile,
-        status__in=["Paid", "Delivery", "Completed"],
-    ).select_related("order", "produce", "order__buyer").order_by("-created_at")
+#     produce_list = Produce.objects.filter(farmer=profile).order_by("-created_at")
+#     marketplace_list = Produce.objects.filter(status="Available").order_by("-created_at")
+#     orders = OrderItem.objects.filter(
+#         farmer=profile,
+#         status__in=["Paid", "Delivery", "Completed"],
+#     ).select_related("order", "produce", "order__buyer").order_by("-created_at")
 
-    total_listings = produce_list.count()
-    total_orders = orders.count()
-    total_income = sum(
-        [item.price for item in orders if item.status in ["Paid", "Delivery", "Completed"]],
-        Decimal("0.00"),
-    )
+#     total_listings = produce_list.count()
+#     total_orders = orders.count()
+#     total_income = sum(
+#         [item.price for item in orders if item.status in ["Paid", "Delivery", "Completed"]],
+#         Decimal("0.00"),
+#     )
 
-    context = {
-        "produce_list": produce_list,
-        "marketplace_list": marketplace_list,
-        "orders": orders,
-        "total_listings": total_listings,
-        "total_orders": total_orders,
-        "total_income": total_income,
-        "wallet_balance": profile.balance,
-    }
+#     context = {
+#         "produce_list": produce_list,
+#         "marketplace_list": marketplace_list,
+#         "orders": orders,
+#         "total_listings": total_listings,
+#         "total_orders": total_orders,
+#         "total_income": total_income,
+#         "wallet_balance": profile.balance,
+#     }
 
-    return render(request, "farmer-dashboard.html", context)
+#     return render(request, "farmer-dashboard.html", context)
 
 
 # =========================
@@ -419,6 +421,90 @@ def farmer_dashboard(request):
 #
 #     # return render(request, "marketplace.html", context)
 #     return render(request, "marketplace.html", {"produce_list": produce_list})
+
+
+
+@login_required
+def farmer_dashboard(request):
+    try:
+        profile = FarmerProfile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        return redirect("farmer_register")
+
+    # ================= ADD PRODUCE (AJAX) =================
+    if request.method == "POST":
+
+        name = request.POST.get("produceName")
+        quantity = request.POST.get("quantity")
+        price = request.POST.get("price")
+        image = request.FILES.get("image")
+
+        if not all([name, quantity, price, image]):
+            return JsonResponse({
+                "success": False,
+                "error": "All fields required"
+            })
+
+        produce = Produce.objects.create(
+            farmer=profile,
+            name=name,
+            quantity=float(quantity),
+            price=Decimal(price),
+            image=image,
+            status="Available",
+        )
+
+        return JsonResponse({
+            "success": True,
+            "produce": {
+                "id": produce.id,
+                "name": produce.name,
+                "quantity": produce.quantity,
+                "price": str(produce.price),
+                "status": produce.status,
+                "image_url": produce.image.url,
+                "farmer_username": request.user.username,
+            }
+        })
+
+    # ================= DASHBOARD DATA =================
+    produce_list = Produce.objects.filter(
+        farmer=profile
+    ).order_by("-created_at")
+
+    marketplace_list = Produce.objects.filter(
+        status="Available"
+    ).order_by("-created_at")
+    
+
+    orders = OrderItem.objects.filter(
+        farmer=profile,
+        status__in=["Paid", "Delivery", "Completed"],
+    ).select_related(
+        "order", "produce", "order__buyer"
+    ).order_by("-created_at")
+
+    total_listings = produce_list.count()
+    total_orders = orders.count()
+
+    total_income = sum(
+        (item.price for item in orders),
+        Decimal("0.00")
+    )
+
+    context = {
+        "produce_list": produce_list,
+        "marketplace_list": marketplace_list,
+        "orders": orders,
+        "total_listings": total_listings,
+        "total_orders": total_orders,
+        "total_income": total_income,
+        "wallet_balance": profile.balance,
+    }
+
+    return render(request, "farmer-dashboard.html", context)
+
+
 
 @login_required
 def marketplace(request):

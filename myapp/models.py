@@ -9,6 +9,14 @@ class FarmerProfile(models.Model):
     phone = models.CharField(max_length=20)
     county = models.CharField(max_length=100)
 
+    # ⭐ NEW FIELD
+    profile_pic = models.ImageField(
+        upload_to="profile_pics/",
+        null=True,
+        blank=True,
+        default="profile_pics/default.png"
+    )
+
     farm_name = models.CharField(max_length=200)
     farming_type = models.CharField(max_length=100)
     farm_size = models.FloatField()
@@ -25,8 +33,6 @@ class FarmerProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-
 # ================= PRODUCE =================
 class Produce(models.Model):
     farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE)
