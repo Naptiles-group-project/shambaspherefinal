@@ -1524,8 +1524,8 @@ def checkout(request):
         data = {
             "email": email,
             "amount": amount,
-            "callback_url": "http://127.0.0.1:8000/verify-payment/"
-        }
+            "callback_url": "https://shambaspherefinal.onrender.com/verify-payment/"
+              }
 
         response = requests.post(url, headers=headers, json=data)
         res_data = response.json()
@@ -1666,7 +1666,7 @@ from django.template.loader import get_template
 
 @login_required
 def download_receipt(request, order_id):
-    from xhtml2pdf import pisa   # 👈 MOVE HERE
+    from xhtml2pdf import pisa   
 
     order = Order.objects.get(id=order_id, buyer=request.user)
     items = order.items.all()
