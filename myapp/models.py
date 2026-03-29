@@ -8,8 +8,6 @@ class FarmerProfile(models.Model):
 
     phone = models.CharField(max_length=20)
     county = models.CharField(max_length=100)
-
-    # ⭐ NEW FIELD
     profile_pic = models.ImageField(
         upload_to="profile_pics/",
         null=True,
@@ -33,6 +31,7 @@ class FarmerProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
 # ================= PRODUCE =================
 class Produce(models.Model):
     farmer = models.ForeignKey(FarmerProfile, on_delete=models.CASCADE)
@@ -67,13 +66,12 @@ class CartItem(models.Model):
 # ================= ORDER =================
 class Order(models.Model):
     buyer = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    reference = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=20)
     location = models.CharField(max_length=255)
-
     delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-
+    
     payment_status = models.CharField(
         max_length=20,
         choices=[

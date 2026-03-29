@@ -72,4 +72,6 @@ urlpatterns = [
     path('farmer-listings/', views.farmer_listings, name='farmer_listings'),
     path('update-delivery-fee/<int:order_id>/', views.update_delivery_fee, name='update_delivery_fee'),
     path("verify-payment/<str:ref>/", views.verify_payment, name="verify_payment"),
+    path("success/", views.success_page, name="success_page"),
+    path('receipt/<int:order_id>/', views.download_receipt, name='download_receipt'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

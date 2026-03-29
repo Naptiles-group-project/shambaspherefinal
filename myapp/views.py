@@ -1447,28 +1447,54 @@ def update_delivery_fee(request, order_id):
 
 
 
-import requests
-from django.conf import settings
-from django.shortcuts import redirect
+# import requests
+# def checkout(request):
+#     cart = Cart.objects.get(user=request.user)
+#     cart_items = cart.items.all()
+#     email = request.user.email
+#     amount = int(total * Decimal("100"))  # Paystack uses kobo (×100)
+#     phone=request.session.get("phone")
+#     location=request.session.get("location")
+#     items_total = sum(item.produce.price * item.quantity for item in cart_items)
+#     delivery_fee = items_total * Decimal("0.20")
+#     total = items_total + delivery_fee
 
-def verify_payment(request, ref):
-    url = f"https://api.paystack.co/transaction/verify/{ref}"
-    
-    headers = {
-        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
-    }
+#     if request.method == "POST":
 
-    response = requests.get(url, headers=headers)
-    data = response.json()
-
-    if data["data"]["status"] == "success":
+#             request.session["phone"] = request.POST.get("phone")
+#             request.session["location"] = request.POST.get("location")
+        
+      
+        
+#     location = request.session.get("location")
+#     url = "https://api.paystack.co/transaction/initialize"
+#     headers = {
+#             "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+#         }
+#     data = {
+#             "email": email,
+#             "amount": amount,
+#             "callback_url": "http://127.0.0.1:8000/payment-success/"
+#         }   
+#     response = requests.post(url, headers=headers, json=data)
+#     res_data = response.json()
+        
+#     if res_data["status"]:
+#             return redirect(res_data["data"]["authorization_url"])
+#         # if Order.objects.filter(payment_status="Paid", buyer=request.user).exists():
+#        # prevent duplicate processing
+#     return render(request, "checkout.html", {
+#          "paystack_public_key": settings.PAYSTACK_PUBLIC_KEY,
+#         "cart_items": cart_items,
+#         "items_total": items_total,
+#         "delivery_fee": delivery_fee,
+#         "cart_total": total
        
-        return redirect("success_page")
+#     })
 
-    return redirect("cart_view")
 
-import requests
 
+@login_required
 def checkout(request):
     cart = Cart.objects.get(user=request.user)
     cart_items = cart.items.all()
@@ -1478,8 +1504,12 @@ def checkout(request):
     total = items_total + delivery_fee
 
     if request.method == "POST":
+        # SAVE session FIRST
+        request.session["phone"] = request.POST.get("phone")
+        request.session["location"] = request.POST.get("location")
+
         email = request.user.email
-        amount = int(total * Decimal("100"))  # Paystack uses kobo (×100)
+        amount = int(total * 100)
 
         url = "https://api.paystack.co/transaction/initialize"
         headers = {
@@ -1488,7 +1518,7 @@ def checkout(request):
         data = {
             "email": email,
             "amount": amount,
-            "callback_url": "http://127.0.0.1:8000/payment-success/"
+            "callback_url": "http://127.0.0.1:8000/verify-payment/"
         }
 
         response = requests.post(url, headers=headers, json=data)
@@ -1498,12 +1528,11 @@ def checkout(request):
             return redirect(res_data["data"]["authorization_url"])
 
     return render(request, "checkout.html", {
-         "paystack_public_key": settings.PAYSTACK_PUBLIC_KEY,
         "cart_items": cart_items,
         "items_total": items_total,
         "delivery_fee": delivery_fee,
-        "cart_total": total
-       
+        "cart_total": total,
+        "paystack_public_key": settings.PAYSTACK_PUBLIC_KEY
     })
 
 
@@ -1526,3 +1555,124 @@ def payment_success(request):
         return render(request, "success.html")
 
     return render(request, "failed.html")
+
+
+
+def success_page(request):
+    return render(request, "success.html")
+
+
+
+import requests
+from django.conf import settings
+from django.shortcuts import redirect
+
+
+# def verify_payment(request, ref):
+#     url = f"https://api.paystack.co/transaction/verify/{ref}"
+    
+#     headers = {
+#         "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+#     }
+
+#     response = requests.get(url, headers=headers)
+#     data = response.json()
+
+#     if data["data"]["status"] == "success":
+       
+#         return redirect("success_page")
+
+#     return render(request, "success.html", {
+#     "ref": ref,
+#     "amount": cart_total,
+#     "items_total": items_total,
+#     "delivery_fee": delivery_fee,
+# })
+
+from .models import Cart, CartItem, Order, OrderItem
+import requests
+from django.conf import settings
+from django.shortcuts import render
+from .models import Cart, Order, OrderItem
+
+def verify_payment(request, ref):
+
+    # verify payment
+    url = f"https://api.paystack.co/transaction/verify/{ref}"
+    headers = {
+        "Authorization": f"Bearer {settings.PAYSTACK_SECRET_KEY}"
+    }
+
+    response = requests.get(url, headers=headers)
+    data = response.json()
+
+    if data["data"]["status"] == "success":
+
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart_items = cart.items.all()
+
+        #  calculate totals
+        items_total = sum(item.produce.price * item.quantity for item in cart_items)
+        delivery_fee = items_total * Decimal("0.2")
+        total_amount = items_total + delivery_fee
+
+        # create order
+        order = Order.objects.create(
+        buyer=request.user,
+        phone=request.session.get("phone") or "N/A",
+        location=request.session.get("location") or "N/A",
+        delivery_fee=delivery_fee,
+        total_amount=total_amount,
+        payment_status="Paid",
+        reference=ref
+    )
+
+        # create order items
+        for item in cart_items:
+            OrderItem.objects.create(
+                order=order,
+                produce=item.produce,
+                farmer=item.produce.farmer,
+                quantity=item.quantity,
+                price=item.produce.price * item.quantity, 
+                status="Paid"
+            )
+
+        # clear cart
+        cart_items.delete()
+
+        return render(request, "success.html", {
+            "order": order,
+            "ref": ref,
+            "amount": total_amount,
+            "items_total": items_total,
+            "delivery_fee": delivery_fee,
+        })
+    if Order.objects.filter(reference=ref).exists():#prevent duplicate processing
+     return redirect("success_page")
+
+    return render(request, "payment_failed.html")
+
+
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+
+@login_required
+def download_receipt(request, order_id):
+    order = Order.objects.get(id=order_id, buyer=request.user)
+    items = order.items.all()
+
+    template = get_template("receipt.html")
+    html = template.render({
+        "order": order,
+        "items": items
+    })
+
+    response = HttpResponse(content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="receipt_{order.id}.pdf"'
+
+    pisa.CreatePDF(html, dest=response)
+
+    return response

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            border-bottom: 2px solid green;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            color: green;
+            margin: 0;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: green;
+            color: white;
+            padding: 8px;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .total {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2>ShambaSphere Receipt</h2>
+    <p>Payment Confirmation</p>
+</div>
+
+<div class="details">
+    <p><strong>Receipt No:</strong> SS-{{ order.id }}</p>
+    <p><strong>Transaction Ref:</strong> {{ order.reference }}</p>
+    <p><strong>Date:</strong> {{ order.created_at }}</p>
+    <p><strong>Customer:</strong> {{ order.buyer.username }}</p>
+    <p><strong>Phone:</strong> {{ order.phone }}</p>
+    <p><strong>Location:</strong> {{ order.location }}</p>
+</div>
+
+<table>
+    <tr>
+        <th>Item</th>
+        <th>Qty</th>
+        <th>Amount (KSh)</th>
+    </tr>
+
+   {% for item in items %}
+<tr>
+    <td>{{ item.produce.name|default:"-" }}</td>
+    <td>{{ item.quantity|default:"0" }}</td>
+    <td>KSh {{ item.price|floatformat:2 }}</td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="3">No items found</td>
+</tr>
+{% endfor %}
+</table>
+
+<div class="total">
+    <p><strong>Items Total:</strong> KSh {{ order.total_amount|floatformat:2 }}</p>
+    <p><strong>Delivery Fee:</strong> KSh {{ order.delivery_fee }}</p>
+    <h3>Total Paid: KSh {{ order.total_amount }}</h3>
+</div>
+
+<div class="footer">
+    <p>Thank you for shopping with ShambaSphere 🌱</p>
+    <p>This is a system generated receipt</p>
+</div>
+
+</body>
+</html>
