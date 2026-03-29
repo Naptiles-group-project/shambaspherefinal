@@ -27,6 +27,9 @@
 
     <div class="main-content">
         <h1>Admin Dashboard</h1>
+        <div class="card">
+<h3>Total Revenue: KSh {{ total_revenue }}</h3>
+</div>
 
         <section id="users">
             <h2>Users</h2>
@@ -110,6 +113,7 @@
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Status</th>
+                    <th>Actions</th>
                 </tr>
                 {% for product in products %}
                 <tr>
@@ -118,10 +122,18 @@
                     <td>KSh {{ product.price }}</td>
                     <td>{{ product.quantity }}</td>
                     <td>{{ product.status }}</td>
+                    <td>
+                        <form method="POST" action="{% url 'admin_delete_product' product.id %}">
+                            {% csrf_token %}
+                           <button class="reject" type="submit" onclick="return confirm('Delete this product?')">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5">No products found.</td>
+                    <td colspan="6">No products found.</td>
                 </tr>
                 {% endfor %}
             </table>
@@ -157,6 +169,16 @@
                 </form>
                 {% endif %}
 
+                               <p>
+                <strong>Status:</strong> 
+                <span class="status {{ order.payment_status|lower }}">
+                    {{ order.payment_status }}
+                </span>
+                </p>
+
+
+               
+
                 <div class="order-items">
                     <h4>Order Items</h4>
                     {% for item in order.items.all %}
@@ -171,6 +193,9 @@
                     <p>No items in this order.</p>
                     {% endfor %}
                 </div>
+
+ 
+
             </div>
             {% empty %}
             <p>No orders found.</p>

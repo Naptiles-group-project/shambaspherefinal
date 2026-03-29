@@ -74,4 +74,5 @@ urlpatterns = [
     path("verify-payment/<str:ref>/", views.verify_payment, name="verify_payment"),
     path("success/", views.success_page, name="success_page"),
     path('receipt/<int:order_id>/', views.download_receipt, name='download_receipt'),
+    path('dashboard/delete-product/<int:product_id>/', views.admin_delete_product, name='admin_delete_product'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

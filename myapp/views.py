@@ -895,6 +895,7 @@ def reject_advisor(request, advisor_id):
 # =========================
 @staff_member_required
 def admin_dashboard(request):
+    
     users = User.objects.all().order_by("-id")
     products = Produce.objects.all().order_by("-created_at")
     orders = (
@@ -902,6 +903,9 @@ def admin_dashboard(request):
         .prefetch_related("items", "items__produce", "items__farmer__user", "buyer")
         .order_by("-created_at")
     )
+
+    total_revenue = sum([o.total_amount for o in orders if o.payment_status == "Paid"])
+  
     advisors = AdvisorProfile.objects.filter(status="Pending").order_by("-created_at")
     pending_posts = AdvisorPost.objects.filter(status="Pending").order_by("-created_at")
     withdrawals = Withdrawal.objects.filter(status="Pending").select_related("farmer", "farmer__user")
@@ -913,6 +917,8 @@ def admin_dashboard(request):
         "advisors": advisors,
         "pending_posts": pending_posts,
         "withdrawals": withdrawals,
+        "total_revenue": total_revenue,
+        
     }
 
     return render(request, "admin-dashboard.html", context)
@@ -1676,3 +1682,13 @@ def download_receipt(request, order_id):
     pisa.CreatePDF(html, dest=response)
 
     return response
+
+
+@staff_member_required
+def admin_delete_product(request, product_id):
+    product = get_object_or_404(Produce, id=product_id)
+
+    if request.method == "POST":
+        product.delete()
+
+    return redirect("admin_dashboard")

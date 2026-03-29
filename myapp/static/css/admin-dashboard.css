@@ -210,3 +210,15 @@ section {
         padding: 20px;
     }
 }
+
+.status {
+padding: 4px 8px;
+border-radius: 4px;
+color: white;
+font-size: 0.8rem;
+}
+
+.status.pending { background: orange; }
+.status.paid { background: green; }
+.status.delivery { background: blue; }
+.status.completed { background: black; }
