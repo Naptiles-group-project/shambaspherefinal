@@ -1662,28 +1662,55 @@ def verify_payment(request, ref):
 
 
 from django.http import HttpResponse
-from django.template.loader import get_template
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from django.contrib.auth.decorators import login_required
+from .models import Order
+
 
 @login_required
 def download_receipt(request, order_id):
-    from xhtml2pdf import pisa   
-
     order = Order.objects.get(id=order_id, buyer=request.user)
     items = order.items.all()
 
-    template = get_template("receipt.html")
-    html = template.render({
-        "order": order,
-        "items": items
-    })
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="receipt_{order.id}.pdf"'
 
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = f'attachment; filename="receipt_{order.id}.pdf"'
+    p = canvas.Canvas(response, pagesize=letter)
 
-    pisa.CreatePDF(html, dest=response)
+    # Title
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(200, 750, "Receipt")
+
+    # Order Info
+    p.setFont("Helvetica", 12)
+    p.drawString(50, 720, f"Order ID: {order.id}")
+    p.drawString(50, 700, f"Date: {order.created_at}")
+    p.drawString(50, 680, f"Buyer: {request.user.username}")
+
+    # Table header
+    y = 640
+    p.drawString(50, y, "Product")
+    p.drawString(250, y, "Qty")
+    p.drawString(300, y, "Price")
+
+    y -= 20
+
+    # Items
+    for item in items:
+        p.drawString(50, y, str(item.product.name))
+        p.drawString(250, y, str(item.quantity))
+        p.drawString(300, y, str(item.price))
+        y -= 20
+
+    # Total
+    y -= 20
+    p.drawString(50, y, f"Total: {order.total_amount}")
+
+    p.showPage()
+    p.save()
 
     return response
-
 
 @staff_member_required
 def admin_delete_product(request, product_id):
