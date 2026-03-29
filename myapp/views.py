@@ -1663,10 +1663,11 @@ def verify_payment(request, ref):
 
 from django.http import HttpResponse
 from django.template.loader import get_template
-from xhtml2pdf import pisa
 
 @login_required
 def download_receipt(request, order_id):
+    from xhtml2pdf import pisa   # 👈 MOVE HERE
+
     order = Order.objects.get(id=order_id, buyer=request.user)
     items = order.items.all()
 
